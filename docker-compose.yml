@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: trackmydsa-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: trackmydsa
+      POSTGRES_PASSWORD: trackmydsa
+      POSTGRES_DB: trackmydsa
+    ports:
+      - "5432:5432"
+    volumes:
+      - trackmydsa_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U trackmydsa"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  trackmydsa_pgdata:
