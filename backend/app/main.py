@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -6,10 +8,20 @@ from app.routers import ai, auth_routes, leetcode, notes, progress, questions, s
 
 settings = get_settings()
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    from app.seed import main as run_seed
+
+    run_seed()
+    yield
+
+
 app = FastAPI(
     title="AlgoTrail.ai API",
     description="Backend for the AlgoTrail.ai tracker",
     version="0.1.0",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
