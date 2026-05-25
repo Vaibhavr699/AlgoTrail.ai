@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, RotateCcw } from "lucide-react";
+import { X } from "lucide-react";
 import { useUIStore } from "@/stores/ui.store";
 import { AgentAvatar } from "./agent-avatar";
 import { cn } from "@/lib/utils";
@@ -18,9 +18,9 @@ const TIPS = [
 ];
 
 export function AgentBubble() {
-  const { onboardingComplete, resetOnboarding } = useUIStore();
+  const { onboardingComplete } = useUIStore();
   const [open, setOpen] = useState(false);
-  const [tipIndex, setTipIndex] = useState(() => Math.floor(Math.random() * TIPS.length));
+  const [tipIndex] = useState(() => Math.floor(Math.random() * TIPS.length));
 
   if (!onboardingComplete) return null;
 
@@ -45,22 +45,6 @@ export function AgentBubble() {
 
           <div className="px-4 pb-3">
             <p className="text-xs text-[rgb(var(--muted))] leading-relaxed">{TIPS[tipIndex]}</p>
-          </div>
-
-          <div className="flex items-center justify-between border-t border-[rgb(var(--border))] px-4 py-2 bg-gray-50/50 dark:bg-gray-900/30">
-            <button
-              onClick={() => setTipIndex((i) => (i + 1) % TIPS.length)}
-              className="inline-flex items-center gap-1 text-[10px] font-medium text-brand-600 hover:text-brand-700"
-            >
-              <RotateCcw className="h-3 w-3" />
-              Another tip
-            </button>
-            <button
-              onClick={() => { resetOnboarding(); setOpen(false); }}
-              className="text-[10px] text-[rgb(var(--muted))] hover:text-[rgb(var(--foreground))]"
-            >
-              Replay tour
-            </button>
           </div>
         </div>
       )}
