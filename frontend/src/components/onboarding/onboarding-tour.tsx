@@ -84,7 +84,7 @@ export function OnboardingTour({ steps }: { steps: TourStep[] }) {
 
       {/* Tooltip */}
       <div
-        className="fixed z-[10000] w-80 transition-all duration-300"
+        className="fixed z-[10000] w-[calc(100vw-2rem)] sm:w-80 max-w-sm transition-all duration-300"
         style={tooltipStyle}
       >
         <div className="rounded-2xl bg-[rgb(var(--card))] border border-[rgb(var(--border))] shadow-2xl overflow-hidden">
@@ -161,6 +161,12 @@ function getTooltipPosition(rect: DOMRect | null, position: string): React.CSSPr
   if (!rect) return { top: "50%", left: "50%", transform: "translate(-50%, -50%)" };
 
   const gap = 16;
+  const isMobile = window.innerWidth < 640;
+
+  if (isMobile) {
+    return { left: 16, right: 16, top: rect.bottom + gap };
+  }
+
   switch (position) {
     case "top":
       return { top: rect.top - gap, left: rect.left + rect.width / 2, transform: "translate(-50%, -100%)" };

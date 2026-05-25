@@ -4,7 +4,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 
 export default function MarketingLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="relative min-h-screen flex flex-col bg-canvas">
+    <div className="relative min-h-screen flex flex-col bg-canvas overflow-x-hidden">
       {/* Global grid backdrop — sits behind everything on the marketing site */}
       <div
         aria-hidden

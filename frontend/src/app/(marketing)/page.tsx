@@ -12,7 +12,7 @@ export default function LandingPage() {
       <section className="relative">
         <div className="mx-auto max-w-7xl px-6 lg:px-10 pt-10 lg:pt-16 pb-20 lg:pb-28 grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
           <Reveal className="lg:col-span-6" as="div">
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-forest-ink leading-[0.98] tracking-[-0.035em]">
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-forest-ink leading-[0.98] tracking-[-0.035em]">
               Learn The Pattern
               <br />
               Not The Problem
@@ -313,7 +313,7 @@ function PortraitCard() {
       </ul>
 
       {/* Rating chip — overlaps top-right of card (static, no float) */}
-      <div className="absolute -top-3 -right-3 sm:top-6 sm:right-6 rounded-2xl bg-white px-3.5 py-2.5 shadow-xl">
+      <div className="absolute top-3 right-3 sm:top-6 sm:right-6 rounded-2xl bg-white px-3.5 py-2.5 shadow-xl">
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-0.5">
             {[0, 1, 2, 3, 4].map((i) => (
@@ -337,7 +337,7 @@ function PortraitCard() {
       {/* Streak chip — real link to the dashboard */}
       <Link
         href="/dashboard"
-        className="group absolute -bottom-4 -left-4 sm:bottom-6 sm:left-6 rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-forest-ink shadow-xl flex items-center gap-2 transition-transform hover:-translate-y-0.5"
+        className="group absolute bottom-3 left-3 sm:bottom-6 sm:left-6 rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-forest-ink shadow-xl flex items-center gap-2 transition-transform hover:-translate-y-0.5"
       >
         <span className="inline-flex h-2 w-2 rounded-full bg-forest-500" />
         12-day streak

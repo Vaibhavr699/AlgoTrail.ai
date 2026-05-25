@@ -72,6 +72,13 @@
     background-position: -6px -6px, 0 0, 0 0;
     background-size: 80px 80px, 80px 80px, 80px 80px;
   }
+  @media (max-width: 639px) {
+    .bg-grid {
+      opacity: 0.35;
+      -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 50%);
+      mask-image: linear-gradient(to bottom, black 0%, transparent 50%);
+    }
+  }
   .bg-grid-fade {
     -webkit-mask-image: radial-gradient(ellipse 100% 70% at 50% 30%, black 40%, transparent 90%);
     mask-image: radial-gradient(ellipse 100% 70% at 50% 30%, black 40%, transparent 90%);

@@ -65,13 +65,13 @@ export function HeroCollage() {
       variants={container}
       initial="hidden"
       animate="show"
-      className="relative grid grid-cols-12 gap-3 sm:gap-4 lg:h-[560px]"
+      className="relative grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4 lg:h-[560px]"
     >
       {/* TOP-LEFT — Dashboard mockup card (clickable into /dashboard) */}
       <motion.div
         variants={item}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="col-span-7 row-span-2"
+        className="sm:col-span-7 sm:row-span-2"
       >
         <Link
           href="/dashboard"
@@ -120,7 +120,7 @@ export function HeroCollage() {
       <motion.div
         variants={item}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="col-span-5 row-span-2 rounded-3xl bg-forest-ink p-5 flex flex-col justify-between relative overflow-hidden"
+        className="sm:col-span-5 sm:row-span-2 rounded-3xl bg-forest-ink p-5 flex flex-col justify-between relative overflow-hidden min-h-[240px]"
       >
         <div
           aria-hidden
@@ -168,7 +168,7 @@ export function HeroCollage() {
       <motion.div
         variants={item}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="col-span-7 rounded-3xl bg-forest-500 p-5 text-white relative overflow-hidden"
+        className="sm:col-span-7 rounded-3xl bg-forest-500 p-5 text-white relative overflow-hidden"
       >
         <div className="flex items-center justify-between">
           <p className="text-[10px] font-semibold tracking-wider text-white/70">
@@ -190,7 +190,7 @@ export function HeroCollage() {
       <motion.div
         variants={item}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="col-span-5 rounded-3xl bg-forest-ink p-5 text-white flex flex-col justify-between"
+        className="sm:col-span-5 rounded-3xl bg-forest-ink p-5 text-white flex flex-col justify-between gap-4"
       >
         <p className="text-4xl sm:text-5xl font-bold tracking-tight">150+</p>
         <p className="text-sm text-white/80 leading-snug">
@@ -202,7 +202,7 @@ export function HeroCollage() {
       <motion.div
         variants={item}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="col-span-12 sm:col-span-7"
+        className="sm:col-span-7"
       >
         <Link
           href="/roadmap"

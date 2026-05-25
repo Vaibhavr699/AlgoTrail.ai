@@ -21,13 +21,13 @@ export function WelcomeModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-[10001] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[10001] flex items-end sm:items-center justify-center p-3 sm:p-4">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={skipTour} />
-      <div className="relative w-full max-w-md rounded-3xl bg-[rgb(var(--card))] border border-[rgb(var(--border))] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+      <div className="relative w-full max-w-md rounded-2xl sm:rounded-3xl bg-[rgb(var(--card))] border border-[rgb(var(--border))] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-300">
         {/* Top decoration */}
         <div className="h-2 bg-gradient-to-r from-brand-400 via-emerald-400 to-brand-500" />
 
-        <div className="px-6 pt-6 pb-2 text-center">
+        <div className="px-4 sm:px-6 pt-5 sm:pt-6 pb-2 text-center">
           <div className="flex justify-center mb-4">
             <AgentAvatar size="lg" pulse />
           </div>
@@ -39,7 +39,7 @@ export function WelcomeModal() {
           </p>
         </div>
 
-        <div className="px-6 py-4 space-y-3">
+        <div className="px-4 sm:px-6 py-3 sm:py-4 space-y-2 sm:space-y-3">
           <FeatureRow
             icon={<Target className="h-4 w-4 text-brand-500" />}
             title="Guided Roadmap"
@@ -62,7 +62,7 @@ export function WelcomeModal() {
           />
         </div>
 
-        <div className="px-6 pb-6 pt-2 space-y-2">
+        <div className="px-4 sm:px-6 pb-5 sm:pb-6 pt-2 space-y-2">
           <button
             onClick={startTour}
             className="group flex w-full items-center justify-center gap-2 rounded-xl bg-brand-500 py-3 text-sm font-semibold text-white hover:bg-brand-600 transition-all hover:scale-[1.01] active:scale-[0.99]"
