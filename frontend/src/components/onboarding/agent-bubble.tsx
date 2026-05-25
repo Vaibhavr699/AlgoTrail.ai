@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, RotateCcw, MessageCircle } from "lucide-react";
+import { X, RotateCcw } from "lucide-react";
 import { useUIStore } from "@/stores/ui.store";
 import { AgentAvatar } from "./agent-avatar";
 import { cn } from "@/lib/utils";

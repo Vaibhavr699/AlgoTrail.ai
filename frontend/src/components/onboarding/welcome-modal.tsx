@@ -32,7 +32,7 @@ export function WelcomeModal() {
             <AgentAvatar size="lg" pulse />
           </div>
           <h2 className="text-xl font-bold tracking-tight">
-            Hey! I'm Aria
+            Hey! I&apos;m Aria
           </h2>
           <p className="mt-1 text-sm text-[rgb(var(--muted))]">
             Your AI study guide on AlgoTrail
@@ -74,7 +74,7 @@ export function WelcomeModal() {
             onClick={skipTour}
             className="flex w-full items-center justify-center py-2 text-xs text-[rgb(var(--muted))] hover:text-[rgb(var(--foreground))] transition-colors"
           >
-            I'll explore on my own
+            I&apos;ll explore on my own
           </button>
         </div>
       </div>

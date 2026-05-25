@@ -139,7 +139,7 @@ export function OnboardingTour({ steps }: { steps: TourStep[] }) {
               >
                 {onboardingStep >= steps.length - 1 ? (
                   <>
-                    Let's go!
+                    Let&apos;s go!
                     <Sparkles className="h-3 w-3" />
                   </>
                 ) : (
