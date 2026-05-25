@@ -1,4 +1,4 @@
-"""Static topic definitions for the Track My DSA roadmap.
+"""Static topic definitions for the AlgoTrail.ai roadmap.
 
 The slugs here are the source of truth; questions_data.py keys must match.
 """
