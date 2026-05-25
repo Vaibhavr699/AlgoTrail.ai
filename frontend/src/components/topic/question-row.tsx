@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Check, Circle, RotateCcw, ExternalLink, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { DifficultyBadge } from "@/components/topic/difficulty-badge";
@@ -63,9 +64,12 @@ export function QuestionRow({
       <span className="text-xs font-mono text-[rgb(var(--muted))]">#{index}</span>
 
       <div className="min-w-0">
-        <p className={cn("text-sm font-medium truncate", status === "SOLVED" && "line-through")}>
+        <Link
+          href={`/question/${question.slug}`}
+          className={cn("text-sm font-medium truncate hover:text-brand-600 transition-colors block", status === "SOLVED" && "line-through")}
+        >
           {question.title}
-        </p>
+        </Link>
         <div className="mt-1 flex flex-wrap items-center gap-1.5">
           <PatternTag pattern={question.pattern} />
           {question.companies.slice(0, 3).map((c) => (

@@ -1,5 +1,12 @@
 import type {
+  AIExplanation,
+  AIHint,
+  AIStudyPath,
+  ChatMessage,
+  LeetCodeProblem,
+  LeetCodeSearchResult,
   NoteOut,
+  PatternLesson,
   ProgressMutationResult,
   ProgressOut,
   Status,
@@ -61,5 +68,49 @@ export const api = {
   },
   stats: {
     get: () => http<StatsOut>("/api/stats"),
+  },
+  leetcode: {
+    problem: (slug: string) => http<LeetCodeProblem>(`/api/leetcode/problems/${slug}`),
+    search: (params: { q?: string; difficulty?: string; tags?: string; limit?: number; skip?: number }) => {
+      const sp = new URLSearchParams();
+      if (params.q) sp.set("q", params.q);
+      if (params.difficulty) sp.set("difficulty", params.difficulty);
+      if (params.tags) sp.set("tags", params.tags);
+      if (params.limit) sp.set("limit", String(params.limit));
+      if (params.skip) sp.set("skip", String(params.skip));
+      return http<LeetCodeSearchResult>(`/api/leetcode/search?${sp.toString()}`);
+    },
+  },
+  ai: {
+    generatePath: (goal = "MAANG interview prep", weeks = 8) =>
+      http<AIStudyPath>("/api/ai/generate-path", {
+        method: "POST",
+        json: { goal, weeks },
+      }),
+    hint: (questionSlug: string, level = 1) =>
+      http<AIHint>("/api/ai/hint", {
+        method: "POST",
+        json: { question_slug: questionSlug, level },
+      }),
+    explain: (questionSlug: string, language = "python") =>
+      http<AIExplanation>("/api/ai/explain", {
+        method: "POST",
+        json: { question_slug: questionSlug, language },
+      }),
+    teachPattern: (patternName: string, topicContext?: string) =>
+      http<PatternLesson>("/api/ai/teach-pattern", {
+        method: "POST",
+        json: { pattern_name: patternName, topic_context: topicContext },
+      }),
+    patternTemplate: (patternName: string, language: string) =>
+      http<{ template: string; language: string }>("/api/ai/pattern-template", {
+        method: "POST",
+        json: { pattern_name: patternName, language },
+      }),
+    chat: (patternName: string, messages: ChatMessage[]) =>
+      http<{ reply: string }>("/api/ai/chat", {
+        method: "POST",
+        json: { pattern_name: patternName, messages },
+      }),
   },
 };

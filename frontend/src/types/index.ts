@@ -84,3 +84,94 @@ export interface StatsOut {
     advanced: number;
   };
 }
+
+// LeetCode types
+export interface LeetCodeTag {
+  name: string;
+  slug: string;
+}
+
+export interface LeetCodeProblem {
+  question_id: string | null;
+  title: string;
+  title_slug: string;
+  difficulty: string;
+  content: string | null;
+  topic_tags: LeetCodeTag[];
+  hints: string[];
+  sample_test_case: string | null;
+  is_paid_only: boolean;
+}
+
+export interface LeetCodeSearchItem {
+  question_id: string | null;
+  frontend_question_id: string | null;
+  title: string;
+  title_slug: string;
+  difficulty: string;
+  topic_tags: LeetCodeTag[];
+  is_paid_only: boolean;
+  ac_rate: number | null;
+}
+
+export interface LeetCodeSearchResult {
+  total: number;
+  questions: LeetCodeSearchItem[];
+}
+
+// AI types
+export interface AIHint {
+  hint: string;
+  level: number;
+  key_concept: string;
+  complexity_target: string;
+}
+
+export interface AIExplanation {
+  approach: string;
+  intuition: string;
+  steps: string[];
+  code: string;
+  time_complexity: string;
+  space_complexity: string;
+  common_mistakes: string[];
+  follow_up: string;
+}
+
+export interface PatternLesson {
+  pattern_name: string;
+  summary: string;
+  when_to_use: string;
+  how_it_works: string;
+  template: string;
+  time_complexity: string;
+  space_complexity: string;
+  classic_examples: Array<{ problem: string; why: string }>;
+  common_mistakes: string[];
+  pro_tips: string[];
+  related_patterns: string[];
+}
+
+export interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export interface AIStudyPath {
+  title: string;
+  summary: string;
+  weeks: Array<{
+    week: number;
+    theme: string;
+    topics: string[];
+    daily_hours: number;
+    focus_areas: string[];
+    tips: string;
+  }>;
+  daily_routine: {
+    warmup: string;
+    main_practice: string;
+    review: string;
+  };
+  advice: string;
+}

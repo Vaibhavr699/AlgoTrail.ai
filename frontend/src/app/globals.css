@@ -4,23 +4,23 @@
 
 @layer base {
   :root {
-    --background: 249 250 251;
-    --foreground: 17 24 39;
+    --background: 242 242 238;
+    --foreground: 14 32 23;
     --card: 255 255 255;
-    --card-foreground: 17 24 39;
-    --border: 229 231 235;
-    --muted: 107 114 128;
-    --accent: 59 130 246;
+    --card-foreground: 14 32 23;
+    --border: 224 226 219;
+    --muted: 90 102 92;
+    --accent: 58 112 72;
   }
 
   .dark {
-    --background: 10 15 30;
+    --background: 10 20 14;
     --foreground: 237 237 237;
-    --card: 17 24 39;
+    --card: 17 28 21;
     --card-foreground: 237 237 237;
-    --border: 31 41 55;
-    --muted: 156 163 175;
-    --accent: 96 165 250;
+    --border: 31 48 36;
+    --muted: 156 175 162;
+    --accent: 138 180 148;
   }
 
   * {
@@ -30,7 +30,13 @@
   body {
     background-color: rgb(var(--background));
     color: rgb(var(--foreground));
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4 {
+    letter-spacing: -0.02em;
   }
 }
 
@@ -52,5 +58,31 @@
   .scrollbar-thin::-webkit-scrollbar-thumb {
     background-color: rgb(var(--border));
     border-radius: 3px;
+  }
+
+  /* Architectural grid: thin lines + small "+" cross-marks at every
+     intersection (matches Eductix reference). The plus SVG is 12×12 with
+     the cross centered at (6,6); offsetting the tile by -6px lands the
+     cross centers exactly on the grid intersections. */
+  .bg-grid {
+    background-image:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M6 2v8M2 6h8' stroke='rgba(14,32,23,0.22)' stroke-width='1' stroke-linecap='round'/></svg>"),
+      linear-gradient(to right, rgba(14, 32, 23, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(14, 32, 23, 0.05) 1px, transparent 1px);
+    background-position: -6px -6px, 0 0, 0 0;
+    background-size: 80px 80px, 80px 80px, 80px 80px;
+  }
+  .bg-grid-fade {
+    -webkit-mask-image: radial-gradient(ellipse 100% 70% at 50% 30%, black 40%, transparent 90%);
+    mask-image: radial-gradient(ellipse 100% 70% at 50% 30%, black 40%, transparent 90%);
+  }
+  /* Soft, page-wide variant — lighter so it doesn't fight content. */
+  .bg-grid-soft {
+    background-image:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M6 2v8M2 6h8' stroke='rgba(14,32,23,0.12)' stroke-width='1' stroke-linecap='round'/></svg>"),
+      linear-gradient(to right, rgba(14, 32, 23, 0.025) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(14, 32, 23, 0.025) 1px, transparent 1px);
+    background-position: -6px -6px, 0 0, 0 0;
+    background-size: 80px 80px, 80px 80px, 80px 80px;
   }
 }

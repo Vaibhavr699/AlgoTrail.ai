@@ -73,7 +73,7 @@ export default function TopicDetailPage({ params }: { params: { slug: string } }
   return (
     <>
       <TopNav title={t.title} />
-      <div className="flex-1 p-6 max-w-5xl w-full mx-auto space-y-6">
+      <div className="flex-1 p-6 max-w-6xl w-full mx-auto space-y-6">
         <Link
           href="/roadmap"
           className="inline-flex items-center gap-1 text-sm text-[rgb(var(--muted))] hover:text-brand-500"

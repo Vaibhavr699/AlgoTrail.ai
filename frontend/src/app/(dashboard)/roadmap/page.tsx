@@ -43,7 +43,7 @@ export default function RoadmapPage() {
   return (
     <>
       <TopNav title="Roadmap" />
-      <div className="flex-1 p-6 max-w-4xl w-full mx-auto">
+      <div className="flex-1 p-6 max-w-6xl w-full mx-auto">
         <Card className="p-5 mb-6 bg-brand-50 border-brand-200 dark:bg-brand-900/20 dark:border-brand-800">
           <p className="text-sm">
             <span className="font-semibold">Recommended pace:</span> at{" "}
