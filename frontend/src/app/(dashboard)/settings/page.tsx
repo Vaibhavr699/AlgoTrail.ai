@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import {
   User,
@@ -8,9 +7,6 @@ import {
   LogOut,
   Moon,
   Sun,
-  Monitor,
-  Save,
-  Loader2,
 } from "lucide-react";
 import { TopNav } from "@/components/layout/top-nav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

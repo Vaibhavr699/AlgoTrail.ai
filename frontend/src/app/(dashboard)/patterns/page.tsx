@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowRight, Shapes, BookOpen } from "lucide-react";
 import { TopNav } from "@/components/layout/top-nav";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+
 import { useTopics } from "@/hooks/use-dsa";
 import { cn } from "@/lib/utils";
 

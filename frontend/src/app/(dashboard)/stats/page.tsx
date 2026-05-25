@@ -13,7 +13,7 @@ import {
 import { TopNav } from "@/components/layout/top-nav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ActivityHeatmap } from "@/components/dashboard/activity-heatmap";
-import { useStats, useTopics } from "@/hooks/use-dsa";
+import { useStats } from "@/hooks/use-dsa";
 import { cn } from "@/lib/utils";
 
 const READINESS_LABELS: Record<string, { label: string; icon: typeof Target }> = {
@@ -25,7 +25,6 @@ const READINESS_LABELS: Record<string, { label: string; icon: typeof Target }> =
 
 export default function StatsPage() {
   const stats = useStats();
-  const topics = useTopics();
 
   const difficultyData = useMemo(() => {
     if (!stats.data) return [];

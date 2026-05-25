@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -47,7 +47,7 @@ export default function QuestionDetailPage() {
   const [topicSlug, setTopicSlug] = useState<string>("");
 
   // Find the question from topics
-  const topic = useTopic(topicSlug);
+  useTopic(topicSlug);
 
   // Find which topic contains this question
   useEffect(() => {

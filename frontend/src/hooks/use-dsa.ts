@@ -65,7 +65,7 @@ export function useUpsertNote() {
       language?: string;
       codeSnippet?: string;
     }) => api.notes.upsert(questionId, content, language, codeSnippet),
-    onSuccess: (_data, variables) => {
+    onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["note"] });
     },
   });
