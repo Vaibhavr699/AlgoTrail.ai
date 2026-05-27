@@ -43,6 +43,14 @@ export function useUpdateProgress() {
   });
 }
 
+export function useDailyChallenge() {
+  return useQuery({
+    queryKey: ["daily-challenge"],
+    queryFn: api.dailyChallenge.get,
+    staleTime: 1000 * 60 * 5,
+  });
+}
+
 export function useNote(questionSlug: string) {
   return useQuery({
     queryKey: ["note", questionSlug],

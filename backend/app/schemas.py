@@ -168,3 +168,20 @@ class PatternChatMessage(BaseModel):
 class PatternChatRequest(BaseModel):
     pattern_name: str
     messages: list[PatternChatMessage]
+
+
+# --------------- Daily Challenge ---------------
+
+class DailyChallengeOut(BaseModel):
+    question_id: str
+    title: str
+    slug: str
+    difficulty: Difficulty
+    pattern: str
+    leetcode_id: int | None
+    leetcode_slug: str | None
+    topic_title: str
+    topic_slug: str
+    topic_icon: str
+    topic_color: str
+    date: str

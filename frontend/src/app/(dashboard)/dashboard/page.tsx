@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { TopNav } from "@/components/layout/top-nav";
 import { TodaySuggestion } from "@/components/dashboard/today-suggestion";
+import { DailyChallengeCard } from "@/components/dashboard/daily-challenge";
 import { ActivityHeatmap } from "@/components/dashboard/activity-heatmap";
 import { TopicProgressCard } from "@/components/dashboard/topic-progress-card";
 import { useStats, useTopics, useProgress } from "@/hooks/use-dsa";
@@ -103,6 +104,9 @@ export default function DashboardPage() {
         <div data-tour="next-up">
           <TodaySuggestion question={nextQuestion} topic={nextTopic} />
         </div>
+
+        {/* Daily Challenge */}
+        <DailyChallengeCard />
 
         {/* Readiness + Activity row */}
         <div className="grid lg:grid-cols-2 gap-6">

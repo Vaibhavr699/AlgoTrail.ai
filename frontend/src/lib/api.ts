@@ -3,6 +3,7 @@ import type {
   AIHint,
   AIStudyPath,
   ChatMessage,
+  DailyChallengeOut,
   LeetCodeProblem,
   LeetCodeSearchResult,
   NoteOut,
@@ -94,6 +95,9 @@ export const api = {
       if (params.skip) sp.set("skip", String(params.skip));
       return http<LeetCodeSearchResult>(`/api/leetcode/search?${sp.toString()}`);
     },
+  },
+  dailyChallenge: {
+    get: () => http<DailyChallengeOut>("/api/daily-challenge"),
   },
   ai: {
     generatePath: (goal = "MAANG interview prep", weeks = 8) =>

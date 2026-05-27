@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import Link from "next/link";
 import {
   CheckCircle2,
   Flame,
@@ -9,6 +10,7 @@ import {
   TrendingUp,
   Calendar,
   Zap,
+  Share2,
 } from "lucide-react";
 import { TopNav } from "@/components/layout/top-nav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -80,6 +82,17 @@ export default function StatsPage() {
     <>
       <TopNav title="Stats" />
       <div className="flex-1 p-6 max-w-6xl w-full mx-auto space-y-6">
+        {/* Share button */}
+        <div className="flex justify-end">
+          <Link
+            href="/share"
+            className="inline-flex items-center gap-2 rounded-lg border border-brand-500 text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/20 px-3 h-8 text-xs font-medium transition-colors"
+          >
+            <Share2 className="h-3.5 w-3.5" />
+            Share Progress
+          </Link>
+        </div>
+
         {/* Top stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <MiniStat icon={<CheckCircle2 className="h-5 w-5 text-emerald-500" />} label="Total Solved" value={stats.data.total_solved} />

@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-from app.routers import ai, auth_routes, leetcode, notes, progress, questions, stats, topics
+from app.routers import ai, auth_routes, daily_challenge, leetcode, notes, progress, questions, stats, topics
 
 settings = get_settings()
 
@@ -56,3 +56,4 @@ app.include_router(stats.router, prefix="/api/stats", tags=["stats"])
 app.include_router(auth_routes.router, prefix="/api/auth", tags=["auth"])
 app.include_router(ai.router, prefix="/api/ai", tags=["ai"])
 app.include_router(leetcode.router, prefix="/api/leetcode", tags=["leetcode"])
+app.include_router(daily_challenge.router, prefix="/api/daily-challenge", tags=["daily-challenge"])

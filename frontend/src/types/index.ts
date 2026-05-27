@@ -119,6 +119,22 @@ export interface LeetCodeSearchResult {
   questions: LeetCodeSearchItem[];
 }
 
+// Daily Challenge
+export interface DailyChallengeOut {
+  question_id: string;
+  title: string;
+  slug: string;
+  difficulty: Difficulty;
+  pattern: string;
+  leetcode_id: number | null;
+  leetcode_slug: string | null;
+  topic_title: string;
+  topic_slug: string;
+  topic_icon: string;
+  topic_color: string;
+  date: string;
+}
+
 // AI types
 export interface AIHint {
   hint: string;
