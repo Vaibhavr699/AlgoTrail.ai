@@ -14,13 +14,13 @@
   }
 
   .dark {
-    --background: 10 20 14;
+    --background: 18 18 20;
     --foreground: 237 237 237;
-    --card: 17 28 21;
+    --card: 26 26 30;
     --card-foreground: 237 237 237;
-    --border: 31 48 36;
-    --muted: 156 175 162;
-    --accent: 138 180 148;
+    --border: 42 42 48;
+    --muted: 160 165 170;
+    --accent: 110 190 130;
   }
 
   * {

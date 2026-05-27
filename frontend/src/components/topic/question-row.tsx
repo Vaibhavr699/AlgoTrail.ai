@@ -35,7 +35,7 @@ export function QuestionRow({
   return (
     <div
       className={cn(
-        "grid grid-cols-[auto_auto_1fr_auto_auto] gap-3 items-center px-4 py-3 border-b border-[rgb(var(--border))] hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors",
+        "flex items-start sm:items-center gap-2.5 sm:gap-3 px-3 sm:px-4 py-3 border-b border-[rgb(var(--border))] hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors",
         status === "SOLVED" && "opacity-75"
       )}
     >
@@ -44,7 +44,7 @@ export function QuestionRow({
         disabled={update.isPending}
         aria-label="Toggle status"
         className={cn(
-          "h-6 w-6 rounded-full flex items-center justify-center border transition-colors",
+          "h-6 w-6 rounded-full flex items-center justify-center border transition-colors shrink-0 mt-0.5 sm:mt-0",
           status === "SOLVED" && "bg-emerald-500 border-emerald-500 text-white",
           status === "NEEDS_REVIEW" && "bg-amber-500 border-amber-500 text-white",
           status === "IN_PROGRESS" && "bg-brand-500 border-brand-500 text-white",
@@ -62,38 +62,38 @@ export function QuestionRow({
         ) : null}
       </button>
 
-      <span className="text-xs font-mono text-[rgb(var(--muted))]">#{index}</span>
+      <span className="text-xs font-mono text-[rgb(var(--muted))] hidden sm:block shrink-0">#{index}</span>
 
-      <div className="min-w-0">
-        <Link
-          href={`/question/${question.slug}`}
-          className={cn("text-sm font-medium truncate hover:text-brand-600 transition-colors block", status === "SOLVED" && "line-through")}
-        >
-          {question.title}
-        </Link>
-        <div className="mt-1 flex flex-wrap items-center gap-1.5">
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/question/${question.slug}`}
+            className={cn("text-sm font-medium truncate hover:text-brand-600 transition-colors block flex-1 min-w-0", status === "SOLVED" && "line-through")}
+          >
+            {question.title}
+          </Link>
+          <DifficultyBadge difficulty={question.difficulty} />
+        </div>
+        <div className="mt-1 flex flex-wrap items-center gap-1 sm:gap-1.5">
           <PatternTag pattern={question.pattern} />
-          {question.companies.slice(0, 3).map((c) => (
-            <Badge key={c} variant="muted" className="text-[10px]">
+          {question.companies.slice(0, 2).map((c) => (
+            <Badge key={c} variant="muted" className="text-[10px] hidden sm:inline-flex">
               {c}
             </Badge>
           ))}
+          {question.leetcode_slug && (
+            <a
+              href={`https://leetcode.com/problems/${question.leetcode_slug}/`}
+              target="_blank"
+              rel="noreferrer"
+              className="text-[rgb(var(--muted))] hover:text-brand-500 ml-auto sm:ml-0"
+              aria-label="Open on LeetCode"
+            >
+              <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          )}
         </div>
       </div>
-
-      <DifficultyBadge difficulty={question.difficulty} />
-
-      {question.leetcode_slug && (
-        <a
-          href={`https://leetcode.com/problems/${question.leetcode_slug}/`}
-          target="_blank"
-          rel="noreferrer"
-          className="text-[rgb(var(--muted))] hover:text-brand-500"
-          aria-label="Open on LeetCode"
-        >
-          <ExternalLink className="h-4 w-4" />
-        </a>
-      )}
     </div>
   );
 }

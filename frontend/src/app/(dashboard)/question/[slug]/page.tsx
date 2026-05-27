@@ -101,38 +101,36 @@ export default function QuestionDetailPage() {
   return (
     <>
       <TopNav title={question.title} />
-      <div className="flex-1 p-6 max-w-6xl w-full mx-auto space-y-6">
+      <div className="flex-1 p-4 sm:p-6 max-w-6xl w-full mx-auto space-y-4 sm:space-y-6">
         {/* Header */}
-        <div className="flex items-start justify-between gap-4">
-          <div className="space-y-2">
-            <button
-              onClick={() => router.back()}
-              className="inline-flex items-center gap-1.5 text-sm text-[rgb(var(--muted))] hover:text-[rgb(var(--foreground))] transition-colors"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back
-            </button>
-            <h1 className="text-2xl font-bold tracking-tight">{question.title}</h1>
-            <div className="flex flex-wrap items-center gap-2">
-              <DifficultyBadge difficulty={question.difficulty} />
-              <PatternTag pattern={question.pattern} />
-              {question.companies.slice(0, 5).map((c) => (
-                <Badge key={c} variant="outline" className="text-[11px]">
-                  {c}
-                </Badge>
-              ))}
-            </div>
+        <div className="space-y-3">
+          <button
+            onClick={() => router.back()}
+            className="inline-flex items-center gap-1.5 text-sm text-[rgb(var(--muted))] hover:text-[rgb(var(--foreground))] transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </button>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight">{question.title}</h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <DifficultyBadge difficulty={question.difficulty} />
+            <PatternTag pattern={question.pattern} />
+            {question.companies.slice(0, 3).map((c) => (
+              <Badge key={c} variant="outline" className="text-[10px] sm:text-[11px] hidden sm:inline-flex">
+                {c}
+              </Badge>
+            ))}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <StatusButton questionId={question.id} currentStatus={currentProgress?.status ?? "NOT_STARTED"} />
             {question.leetcode_slug && (
               <a
                 href={`https://leetcode.com/problems/${question.leetcode_slug}/`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-[rgb(var(--border))] px-3 py-2 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-[rgb(var(--border))] px-3 py-2 text-xs sm:text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
-                <ExternalLink className="h-4 w-4" />
+                <ExternalLink className="h-3.5 w-3.5" />
                 LeetCode
               </a>
             )}
@@ -140,27 +138,29 @@ export default function QuestionDetailPage() {
         </div>
 
         {/* Main content */}
-        <div className="grid lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
+        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
             <Tabs defaultValue="problem">
-              <TabsList>
-                <TabsTrigger value="problem">
-                  <BookOpen className="h-3.5 w-3.5 mr-1.5" />
-                  Problem
-                </TabsTrigger>
-                <TabsTrigger value="hints">
-                  <Lightbulb className="h-3.5 w-3.5 mr-1.5" />
-                  AI Hints
-                </TabsTrigger>
-                <TabsTrigger value="solution">
-                  <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                  Explain
-                </TabsTrigger>
-                <TabsTrigger value="notes">
-                  <StickyNote className="h-3.5 w-3.5 mr-1.5" />
-                  Notes
-                </TabsTrigger>
-              </TabsList>
+              <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+                <TabsList>
+                  <TabsTrigger value="problem">
+                    <BookOpen className="h-3.5 w-3.5 mr-1" />
+                    Problem
+                  </TabsTrigger>
+                  <TabsTrigger value="hints">
+                    <Lightbulb className="h-3.5 w-3.5 mr-1" />
+                    Hints
+                  </TabsTrigger>
+                  <TabsTrigger value="solution">
+                    <Sparkles className="h-3.5 w-3.5 mr-1" />
+                    Explain
+                  </TabsTrigger>
+                  <TabsTrigger value="notes">
+                    <StickyNote className="h-3.5 w-3.5 mr-1" />
+                    Notes
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
               <TabsContent value="problem">
                 <ProblemTab leetcodeSlug={question.leetcode_slug} question={question} />

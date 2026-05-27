@@ -27,6 +27,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AgentAvatar } from "@/components/onboarding/agent-avatar";
 import { useTeachPattern, usePatternChat } from "@/hooks/use-dsa";
 import { cn } from "@/lib/utils";
+import { useChatStore } from "@/stores/chat.store";
 import type { PatternLesson, ChatMessage } from "@/types";
 
 export default function PatternDetailPage() {
@@ -385,18 +386,29 @@ function NumberedSteps({ text }: { text: string | string[] }) {
 
 function PatternChatbot({ patternName, onClose }: { patternName: string; onClose: () => void }) {
   const chatMutation = usePatternChat();
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      role: "assistant",
-      content: `Hey! I'm Sage. I see you're learning **${patternName}**. Ask me anything — how it works, when to use it, walk through an example, or compare it with another pattern. I'm here to help!`,
-    },
-  ]);
+  const { getMessages, setMessages: storeMessages } = useChatStore();
+
+  const welcomeMsg: ChatMessage = {
+    role: "assistant",
+    content: `Hey! I'm Sage. I see you're learning **${patternName}**. Ask me anything — how it works, when to use it, walk through an example, or compare it with another pattern. I'm here to help!`,
+  };
+
+  const stored = getMessages(patternName);
+  const [messages, setMessages] = useState<ChatMessage[]>(
+    stored.length > 0 ? stored : [welcomeMsg]
+  );
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    if (messages.length > 1) {
+      storeMessages(patternName, messages);
+    }
+  }, [messages, patternName, storeMessages]);
 
   const send = async (e: FormEvent) => {
     e.preventDefault();
@@ -451,7 +463,7 @@ function PatternChatbot({ patternName, onClose }: { patternName: string; onClose
                     : "bg-gray-100 dark:bg-gray-800 rounded-bl-md"
                 )}
               >
-                <p className="whitespace-pre-wrap">{msg.content}</p>
+                <div className="whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: formatMarkdown(msg.content) }} />
               </div>
             </div>
           ))}
@@ -489,4 +501,12 @@ function PatternChatbot({ patternName, onClose }: { patternName: string; onClose
       </div>
     </div>
   );
+}
+
+function formatMarkdown(text: string): string {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    .replace(/`(.+?)`/g, "<code class='rounded bg-gray-200 dark:bg-gray-700 px-1 py-0.5 text-xs font-mono'>$1</code>")
+    .replace(/\n/g, "<br />");
 }

@@ -2,17 +2,47 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Search, X, ArrowRight } from "lucide-react";
+import {
+  Search,
+  X,
+  ArrowRight,
+  LayoutDashboard,
+  Map,
+  BarChart3,
+  Settings,
+  Shapes,
+  BookOpen,
+} from "lucide-react";
 import { useTopics } from "@/hooks/use-dsa";
 import { useUIStore } from "@/stores/ui.store";
+import { useQueries } from "@tanstack/react-query";
+import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
-import type { QuestionOut, TopicWithQuestions } from "@/types";
+import type { QuestionOut, TopicOut } from "@/types";
 
-interface SearchResult {
+interface QuestionResult {
+  type: "question";
   question: QuestionOut;
   topicSlug: string;
   topicTitle: string;
 }
+
+interface PageResult {
+  type: "page";
+  title: string;
+  href: string;
+  icon: React.ReactNode;
+}
+
+type SearchResult = QuestionResult | PageResult;
+
+const PAGES: PageResult[] = [
+  { type: "page", title: "Dashboard", href: "/dashboard", icon: <LayoutDashboard className="h-4 w-4" /> },
+  { type: "page", title: "Roadmap", href: "/roadmap", icon: <Map className="h-4 w-4" /> },
+  { type: "page", title: "Patterns", href: "/patterns", icon: <Shapes className="h-4 w-4" /> },
+  { type: "page", title: "Stats", href: "/stats", icon: <BarChart3 className="h-4 w-4" /> },
+  { type: "page", title: "Settings", href: "/settings", icon: <Settings className="h-4 w-4" /> },
+];
 
 export function SearchCommand() {
   const open = useUIStore((s) => s.searchOpen);
@@ -21,6 +51,15 @@ export function SearchCommand() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const router = useRouter();
   const topics = useTopics();
+
+  const topicQueries = useQueries({
+    queries: (topics.data ?? []).map((t: TopicOut) => ({
+      queryKey: ["topic", t.slug],
+      queryFn: () => api.topics.get(t.slug),
+      enabled: !!topics.data,
+      staleTime: 1000 * 60 * 5,
+    })),
+  });
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -41,31 +80,61 @@ export function SearchCommand() {
   }, [open, setOpen]);
 
   const results = useMemo(() => {
-    if (!query.trim() || !topics.data) return [];
-    const q = query.toLowerCase();
+    const q = query.toLowerCase().trim();
+    if (!q) return PAGES as SearchResult[];
+
     const matches: SearchResult[] = [];
 
-    for (const topic of topics.data as TopicWithQuestions[]) {
-      if (!topic.questions) continue;
-      for (const question of topic.questions) {
-        if (
-          question.title.toLowerCase().includes(q) ||
-          question.pattern.toLowerCase().includes(q) ||
-          topic.title.toLowerCase().includes(q)
-        ) {
-          matches.push({ question, topicSlug: topic.slug, topicTitle: topic.title });
+    for (const page of PAGES) {
+      if (page.title.toLowerCase().includes(q)) {
+        matches.push(page);
+      }
+    }
+
+    if (topics.data) {
+      for (const page of topics.data) {
+        if (page.title.toLowerCase().includes(q)) {
+          matches.push({
+            type: "page",
+            title: page.title,
+            href: `/topic/${page.slug}`,
+            icon: <BookOpen className="h-4 w-4" />,
+          });
         }
       }
     }
-    return matches.slice(0, 8);
-  }, [query, topics.data]);
+
+    for (const tq of topicQueries) {
+      if (!tq.data?.questions) continue;
+      for (const question of tq.data.questions) {
+        if (
+          question.title.toLowerCase().includes(q) ||
+          question.pattern.toLowerCase().includes(q) ||
+          question.slug.toLowerCase().includes(q)
+        ) {
+          matches.push({
+            type: "question",
+            question,
+            topicSlug: tq.data.slug,
+            topicTitle: tq.data.title,
+          });
+        }
+      }
+    }
+
+    return matches.slice(0, 10);
+  }, [query, topics.data, topicQueries]);
 
   useEffect(() => {
     setSelectedIndex(0);
   }, [query]);
 
   const navigate = (result: SearchResult) => {
-    router.push(`/question/${result.question.slug}`);
+    if (result.type === "page") {
+      router.push(result.href);
+    } else {
+      router.push(`/question/${result.question.slug}`);
+    }
     setOpen(false);
   };
 
@@ -94,7 +163,7 @@ export function SearchCommand() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={onKeyNav}
-            placeholder="Search questions, patterns, topics..."
+            placeholder="Search questions, topics, pages..."
             className="flex-1 h-12 bg-transparent text-sm outline-none placeholder:text-[rgb(var(--muted))]"
           />
           <button onClick={() => setOpen(false)} className="text-[rgb(var(--muted))] hover:text-[rgb(var(--foreground))]">
@@ -105,45 +174,54 @@ export function SearchCommand() {
         <div className="max-h-80 overflow-y-auto">
           {query.trim() && results.length === 0 && (
             <div className="px-4 py-8 text-center text-sm text-[rgb(var(--muted))]">
-              No questions found for &ldquo;{query}&rdquo;
+              No results for &ldquo;{query}&rdquo;
             </div>
+          )}
+
+          {!query.trim() && (
+            <p className="px-4 pt-3 pb-1 text-[10px] font-semibold tracking-wider text-[rgb(var(--muted))]">
+              QUICK NAVIGATION
+            </p>
           )}
 
           {results.map((r, i) => (
             <button
-              key={r.question.id}
+              key={r.type === "page" ? r.href : r.question.id}
               onClick={() => navigate(r)}
               onMouseEnter={() => setSelectedIndex(i)}
               className={cn(
-                "flex w-full items-center gap-3 px-4 py-3 text-left transition-colors",
+                "flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors",
                 i === selectedIndex ? "bg-brand-50 dark:bg-brand-900/20" : "hover:bg-gray-50 dark:hover:bg-gray-800/50"
               )}
             >
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{r.question.title}</p>
-                <p className="text-xs text-[rgb(var(--muted))] flex items-center gap-1.5 mt-0.5">
-                  <span>{r.topicTitle}</span>
-                  <span className="text-[rgb(var(--border))]">/</span>
-                  <span>{r.question.pattern}</span>
-                </p>
-              </div>
-              <span className={cn(
-                "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold",
-                r.question.difficulty === "EASY" && "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
-                r.question.difficulty === "MEDIUM" && "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-                r.question.difficulty === "HARD" && "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
-              )}>
-                {r.question.difficulty}
-              </span>
+              {r.type === "page" ? (
+                <>
+                  <span className="text-[rgb(var(--muted))]">{r.icon}</span>
+                  <span className="text-sm font-medium flex-1">{r.title}</span>
+                </>
+              ) : (
+                <>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{r.question.title}</p>
+                    <p className="text-xs text-[rgb(var(--muted))] flex items-center gap-1.5 mt-0.5">
+                      <span>{r.topicTitle}</span>
+                      <span className="text-[rgb(var(--border))]">/</span>
+                      <span>{r.question.pattern}</span>
+                    </p>
+                  </div>
+                  <span className={cn(
+                    "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold",
+                    r.question.difficulty === "EASY" && "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+                    r.question.difficulty === "MEDIUM" && "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+                    r.question.difficulty === "HARD" && "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+                  )}>
+                    {r.question.difficulty}
+                  </span>
+                </>
+              )}
               <ArrowRight className="h-3.5 w-3.5 text-[rgb(var(--muted))] shrink-0" />
             </button>
           ))}
-
-          {!query.trim() && (
-            <div className="px-4 py-6 text-center text-sm text-[rgb(var(--muted))]">
-              Start typing to search across all questions...
-            </div>
-          )}
         </div>
 
         <div className="flex items-center gap-3 px-4 py-2 border-t border-[rgb(var(--border))] text-[10px] text-[rgb(var(--muted))]">

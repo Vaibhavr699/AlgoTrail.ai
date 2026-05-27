@@ -74,7 +74,7 @@ export default function TopicDetailPage({ params }: { params: { slug: string } }
   return (
     <>
       <TopNav title={t.title} />
-      <div className="flex-1 p-6 max-w-6xl w-full mx-auto space-y-6">
+      <div className="flex-1 p-4 sm:p-6 max-w-6xl w-full mx-auto space-y-4 sm:space-y-6">
         <Link
           href="/roadmap"
           className="inline-flex items-center gap-1 text-sm text-[rgb(var(--muted))] hover:text-brand-500"
@@ -82,19 +82,33 @@ export default function TopicDetailPage({ params }: { params: { slug: string } }
           <ArrowLeft className="h-4 w-4" /> Back to Roadmap
         </Link>
 
-        <Card className="p-6">
-          <div className="flex items-start gap-4">
-            <div className="text-4xl">{t.icon}</div>
+        <Card className="p-4 sm:p-6">
+          <div className="flex items-start gap-3 sm:gap-4">
+            <div className="text-3xl sm:text-4xl shrink-0">{t.icon}</div>
             <div className="flex-1 min-w-0">
-              <h1 className="text-xl font-semibold tracking-tight">{t.title}</h1>
-              <p className="mt-1 text-sm text-[rgb(var(--muted))]">{t.description}</p>
-              <div className="mt-3 flex flex-wrap gap-1.5">
+              <h1 className="text-lg sm:text-xl font-semibold tracking-tight">{t.title}</h1>
+              <p className="mt-1 text-xs sm:text-sm text-[rgb(var(--muted))]">{t.description}</p>
+              <div className="mt-2 sm:mt-3 flex flex-wrap gap-1 sm:gap-1.5">
                 {t.patterns.map((p) => (
                   <PatternTag key={p} pattern={p} />
                 ))}
               </div>
+              {/* Progress — inline on mobile */}
+              <div className="mt-3 sm:hidden">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-lg font-mono font-semibold">{ratio}%</span>
+                  <span className="text-xs text-[rgb(var(--muted))]">{solved} / {total} solved</span>
+                </div>
+                <Progress value={ratio} className="w-full" />
+                <div className="mt-2 flex gap-3 text-[11px] font-mono text-[rgb(var(--muted))]">
+                  <span>E: {byDiff.EASY.solved}/{byDiff.EASY.total}</span>
+                  <span>M: {byDiff.MEDIUM.solved}/{byDiff.MEDIUM.total}</span>
+                  <span>H: {byDiff.HARD.solved}/{byDiff.HARD.total}</span>
+                </div>
+              </div>
             </div>
-            <div className="text-right shrink-0">
+            {/* Progress — side on desktop */}
+            <div className="hidden sm:block text-right shrink-0">
               <div className="text-2xl font-mono font-semibold">{ratio}%</div>
               <p className="text-xs text-[rgb(var(--muted))]">
                 {solved} / {total} solved
@@ -109,16 +123,18 @@ export default function TopicDetailPage({ params }: { params: { slug: string } }
           </div>
         </Card>
 
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <Tabs value={filter} onValueChange={(v) => setFilter(v as Filter)}>
-            <TabsList>
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="NOT_STARTED">Not Started</TabsTrigger>
-              <TabsTrigger value="IN_PROGRESS">In Progress</TabsTrigger>
-              <TabsTrigger value="SOLVED">Solved</TabsTrigger>
-              <TabsTrigger value="NEEDS_REVIEW">Needs Review</TabsTrigger>
-            </TabsList>
-          </Tabs>
+        <div className="space-y-3 sm:space-y-0 sm:flex sm:flex-wrap sm:items-center sm:justify-between sm:gap-3">
+          <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+            <Tabs value={filter} onValueChange={(v) => setFilter(v as Filter)}>
+              <TabsList>
+                <TabsTrigger value="all">All</TabsTrigger>
+                <TabsTrigger value="NOT_STARTED">New</TabsTrigger>
+                <TabsTrigger value="IN_PROGRESS">Started</TabsTrigger>
+                <TabsTrigger value="SOLVED">Solved</TabsTrigger>
+                <TabsTrigger value="NEEDS_REVIEW">Review</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
 
           <div className="flex items-center gap-1">
             {(["all", "EASY", "MEDIUM", "HARD"] as const).map((d) => (
@@ -127,6 +143,7 @@ export default function TopicDetailPage({ params }: { params: { slug: string } }
                 size="sm"
                 variant={difficulty === d ? "default" : "secondary"}
                 onClick={() => setDifficulty(d)}
+                className="text-xs"
               >
                 {d === "all" ? "All" : d.charAt(0) + d.slice(1).toLowerCase()}
               </Button>

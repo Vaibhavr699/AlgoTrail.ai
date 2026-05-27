@@ -43,9 +43,9 @@ export default function RoadmapPage() {
   return (
     <>
       <TopNav title="Roadmap" />
-      <div className="flex-1 p-6 max-w-6xl w-full mx-auto">
-        <Card className="p-5 mb-6 bg-brand-50 border-brand-200 dark:bg-brand-900/20 dark:border-brand-800">
-          <p className="text-sm">
+      <div className="flex-1 p-4 sm:p-6 max-w-6xl w-full mx-auto">
+        <Card className="p-4 sm:p-5 mb-6 bg-brand-50 border-brand-200 dark:bg-brand-900/20 dark:border-brand-800">
+          <p className="text-xs sm:text-sm">
             <span className="font-semibold">Recommended pace:</span> at{" "}
             <span className="font-mono">{dailyTarget}</span> problems/day, you&apos;ll finish in roughly{" "}
             <span className="font-mono">{weeksLeft}</span> weeks. 🎯
@@ -54,17 +54,17 @@ export default function RoadmapPage() {
 
         <div className="relative">
           {/* vertical line */}
-          <div className="absolute left-6 top-0 bottom-0 w-px bg-[rgb(var(--border))]" />
+          <div className="absolute left-4 sm:left-6 top-0 bottom-0 w-px bg-[rgb(var(--border))]" />
 
-          <ol className="space-y-4">
+          <ol className="space-y-3 sm:space-y-4">
             {items.map(({ topic, solved, total, state }) => {
               const p = pct(solved, total);
               return (
-                <li key={topic.id} className="relative pl-14">
+                <li key={topic.id} className="relative pl-10 sm:pl-14">
                   {/* node */}
                   <div
                     className={cn(
-                      "absolute left-3 top-5 h-7 w-7 rounded-full border-2 flex items-center justify-center bg-[rgb(var(--card))]",
+                      "absolute left-1 sm:left-3 top-4 sm:top-5 h-6 w-6 sm:h-7 sm:w-7 rounded-full border-2 flex items-center justify-center bg-[rgb(var(--card))]",
                       state === "completed" && "border-emerald-500 bg-emerald-500",
                       state === "in-progress" && "border-brand-500 animate-pulse-soft",
                       state === "locked" && "border-[rgb(var(--border))] bg-gray-100 dark:bg-gray-800",
@@ -81,16 +81,16 @@ export default function RoadmapPage() {
                   >
                     <Card
                       className={cn(
-                        "p-5 transition-colors",
+                        "p-4 sm:p-5 transition-colors",
                         state === "locked" && "opacity-60",
                         state === "in-progress" && "ring-2 ring-brand-300 dark:ring-brand-700"
                       )}
                     >
-                      <div className="flex items-start gap-4">
-                        <div className="text-3xl">{topic.icon}</div>
+                      <div className="flex items-start gap-3 sm:gap-4">
+                        <div className="text-2xl sm:text-3xl shrink-0">{topic.icon}</div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <h3 className="font-semibold">{topic.title}</h3>
+                            <h3 className="text-sm sm:text-base font-semibold">{topic.title}</h3>
                             {state === "in-progress" && (
                               <Badge variant="default" className="text-[10px] uppercase">
                                 Active
@@ -102,22 +102,28 @@ export default function RoadmapPage() {
                               </Badge>
                             )}
                           </div>
-                          <p className="mt-1 text-xs text-[rgb(var(--muted))] font-mono">
+                          <p className="mt-1 text-[11px] sm:text-xs text-[rgb(var(--muted))] font-mono">
                             ~{topic.estimated_days} days · {total} questions
                           </p>
-                          <div className="mt-2 flex flex-wrap gap-1.5">
-                            {topic.patterns.map((p) => (
-                              <PatternTag key={p} pattern={p} />
+                          <div className="mt-2 flex flex-wrap gap-1 sm:gap-1.5">
+                            {topic.patterns.map((pt) => (
+                              <PatternTag key={pt} pattern={pt} />
                             ))}
                           </div>
+                          {/* Progress bar — inline on mobile */}
+                          <div className="mt-3 flex items-center gap-2 sm:hidden">
+                            <Progress value={p} className="flex-1" />
+                            <span className="text-[11px] font-mono text-[rgb(var(--muted))] shrink-0">{p}%</span>
+                          </div>
                         </div>
-                        <div className="text-right shrink-0">
+                        {/* Progress bar — side on desktop */}
+                        <div className="hidden sm:block text-right shrink-0">
                           <div className="text-xs font-mono text-[rgb(var(--muted))]">
                             {p}%
                           </div>
                           <Progress value={p} className="mt-2 w-28" />
                         </div>
-                        <ChevronRight className="h-4 w-4 text-[rgb(var(--muted))] shrink-0 mt-1" />
+                        <ChevronRight className="h-4 w-4 text-[rgb(var(--muted))] shrink-0 mt-1 hidden sm:block" />
                       </div>
                     </Card>
                   </TopicLink>
