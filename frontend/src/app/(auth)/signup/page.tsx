@@ -6,6 +6,7 @@ import { signIn } from "next-auth/react";
 import { FormEvent, useMemo, useState } from "react";
 import { Eye, EyeOff, Check } from "lucide-react";
 import { DotsLoader } from "@/components/ui/dots-loader";
+import { useAuthStore } from "@/stores/auth.store";
 import { cn } from "@/lib/utils";
 
 export default function SignupPage() {
@@ -53,11 +54,16 @@ export default function SignupPage() {
       body: JSON.stringify({ name, email, password }),
     });
 
+    const body = await res.json().catch(() => null);
+
     if (!res.ok) {
-      const body = await res.json().catch(() => null);
       setSubmitting(false);
       setError(body?.detail || "Could not create account. Try another email.");
       return;
+    }
+
+    if (body) {
+      useAuthStore.getState().setUser({ id: body.id, name: body.name, email: body.email });
     }
 
     const signInRes = await signIn("credentials", {

@@ -6,10 +6,10 @@ import { useUIStore } from "@/stores/ui.store";
 import { AgentAvatar } from "./agent-avatar";
 
 export function WelcomeModal() {
-  const { onboardingComplete, onboardingStep, setOnboardingStep } = useUIStore();
+  const { _hydrated, onboardingComplete, onboardingStep, setOnboardingStep } = useUIStore();
   const [dismissed, setDismissed] = useState(false);
 
-  if (onboardingComplete || onboardingStep !== 0 || dismissed) return null;
+  if (!_hydrated || onboardingComplete || onboardingStep !== 0 || dismissed) return null;
 
   const startTour = () => {
     setOnboardingStep(1);

@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 type Theme = "light" | "dark";
 
 interface UIState {
+  _hydrated: boolean;
   sidebarOpen: boolean;
   mobileSidebarOpen: boolean;
   searchOpen: boolean;
@@ -23,6 +24,7 @@ interface UIState {
 export const useUIStore = create<UIState>()(
   persist(
     (set) => ({
+      _hydrated: false,
       sidebarOpen: true,
       mobileSidebarOpen: false,
       searchOpen: false,
@@ -38,6 +40,11 @@ export const useUIStore = create<UIState>()(
       completeOnboarding: () => set({ onboardingComplete: true, onboardingStep: -1 }),
       resetOnboarding: () => set({ onboardingComplete: false, onboardingStep: 0 }),
     }),
-    { name: "algotrail-ui" }
+    {
+      name: "algotrail-ui",
+      onRehydrateStorage: () => () => {
+        useUIStore.setState({ _hydrated: true });
+      },
+    }
   )
 );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Bell, Flame, Target, Sparkles, Trophy, X } from "lucide-react";
+import { Bell, Target, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -14,44 +14,28 @@ interface Notification {
   read: boolean;
 }
 
-const NOTIFICATIONS: Notification[] = [
+const WELCOME_NOTIFICATIONS: Notification[] = [
   {
     id: "1",
-    icon: <Flame className="h-4 w-4 text-orange-500" />,
-    title: "Keep your streak alive!",
-    message: "Solve one problem today to maintain your daily streak. Consistency beats intensity.",
+    icon: <Sparkles className="h-4 w-4 text-brand-500" />,
+    title: "Welcome to AlgoTrail!",
+    message: "Your DSA roadmap is ready. Start with Arrays & Hashing — it's the best foundation for everything else.",
     time: "Just now",
     read: false,
   },
   {
     id: "2",
-    icon: <Target className="h-4 w-4 text-brand-500" />,
-    title: "New pattern unlocked",
-    message: "You've completed enough problems to start the Sliding Window pattern. Ready to dive in?",
-    time: "2h ago",
+    icon: <Target className="h-4 w-4 text-amber-500" />,
+    title: "Your first problem awaits",
+    message: "Head to the dashboard to see your next recommended problem. One a day is all it takes.",
+    time: "Just now",
     read: false,
-  },
-  {
-    id: "3",
-    icon: <Sparkles className="h-4 w-4 text-amber-500" />,
-    title: "You're making progress!",
-    message: "You've solved 5 problems this week. That's more than 80% of users. Keep going!",
-    time: "1d ago",
-    read: true,
-  },
-  {
-    id: "4",
-    icon: <Trophy className="h-4 w-4 text-yellow-500" />,
-    title: "Milestone reached",
-    message: "You've completed your first topic! Arrays & Hashing is done. On to Two Pointers!",
-    time: "3d ago",
-    read: true,
   },
 ];
 
 export function NotificationsDropdown() {
   const [open, setOpen] = useState(false);
-  const [notifications, setNotifications] = useState(NOTIFICATIONS);
+  const [notifications, setNotifications] = useState(WELCOME_NOTIFICATIONS);
   const ref = useRef<HTMLDivElement>(null);
 
   const unreadCount = notifications.filter((n) => !n.read).length;

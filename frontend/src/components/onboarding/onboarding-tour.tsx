@@ -16,7 +16,7 @@ export interface TourStep {
 const AGENT_NAME = "Sage";
 
 export function OnboardingTour({ steps }: { steps: TourStep[] }) {
-  const { onboardingComplete, onboardingStep, setOnboardingStep, completeOnboarding } = useUIStore();
+  const { _hydrated, onboardingComplete, onboardingStep, setOnboardingStep, completeOnboarding } = useUIStore();
   const [rect, setRect] = useState<DOMRect | null>(null);
   const [visible, setVisible] = useState(false);
 
@@ -44,7 +44,7 @@ export function OnboardingTour({ steps }: { steps: TourStep[] }) {
     };
   }, [onboardingComplete, onboardingStep, steps.length, updatePosition]);
 
-  if (onboardingComplete || onboardingStep < 0 || onboardingStep >= steps.length) return null;
+  if (!_hydrated || onboardingComplete || onboardingStep < 0 || onboardingStep >= steps.length) return null;
   if (!currentStep) return null;
 
   const pos = currentStep.position || "bottom";

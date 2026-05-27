@@ -17,6 +17,19 @@ import type {
 
 const BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
+function getAuthHeader(): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = localStorage.getItem("algotrail-auth");
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      const email = parsed?.state?.user?.email;
+      if (email) return { Authorization: `Bearer ${email}` };
+    }
+  } catch {}
+  return {};
+}
+
 async function http<T>(
   path: string,
   init?: RequestInit & { json?: unknown }
@@ -26,6 +39,7 @@ async function http<T>(
     ...rest,
     headers: {
       "Content-Type": "application/json",
+      ...getAuthHeader(),
       ...(headers ?? {}),
     },
     body: json !== undefined ? JSON.stringify(json) : rest.body,

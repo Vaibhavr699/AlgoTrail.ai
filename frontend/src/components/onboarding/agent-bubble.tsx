@@ -18,11 +18,11 @@ const TIPS = [
 ];
 
 export function AgentBubble() {
-  const { onboardingComplete } = useUIStore();
+  const { _hydrated, onboardingComplete } = useUIStore();
   const [open, setOpen] = useState(false);
   const [tipIndex] = useState(() => Math.floor(Math.random() * TIPS.length));
 
-  if (!onboardingComplete) return null;
+  if (!_hydrated || !onboardingComplete) return null;
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
@@ -48,24 +48,6 @@ export function AgentBubble() {
           </div>
         </div>
       )}
-
-      {/* FAB */}
-      <button
-        onClick={() => setOpen(!open)}
-        className={cn(
-          "group h-12 w-12 rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105 active:scale-95",
-          open
-            ? "bg-gray-200 dark:bg-gray-700"
-            : "bg-brand-500 hover:bg-brand-600"
-        )}
-        aria-label="Talk to Sage"
-      >
-        {open ? (
-          <X className="h-5 w-5 text-[rgb(var(--foreground))]" />
-        ) : (
-          <AgentAvatar size="sm" className="pointer-events-none" />
-        )}
-      </button>
     </div>
   );
 }

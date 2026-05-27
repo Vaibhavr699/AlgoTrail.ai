@@ -79,41 +79,41 @@ export default function DashboardPage() {
     );
   }, [stats.data]);
 
+  const isLoading = stats.isLoading || topics.isLoading;
+
+  if (isLoading) {
+    return (
+      <>
+        <TopNav title="Dashboard" />
+        <div className="flex-1 p-6 max-w-7xl w-full mx-auto space-y-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="rounded-lg border border-[rgb(var(--border))] bg-[rgb(var(--card))] p-4 space-y-3">
+                <div className="h-3 w-16 rounded bg-gray-200 dark:bg-gray-700 animate-pulse" />
+                <div className="h-7 w-24 rounded bg-gray-200 dark:bg-gray-700 animate-pulse" />
+              </div>
+            ))}
+          </div>
+          <div className="h-36 rounded-lg bg-gray-200 dark:bg-gray-700 animate-pulse" />
+          <div className="grid lg:grid-cols-2 gap-6">
+            <div className="h-48 rounded-lg border border-[rgb(var(--border))] bg-[rgb(var(--card))] animate-pulse" />
+            <div className="h-48 rounded-lg border border-[rgb(var(--border))] bg-[rgb(var(--card))] animate-pulse" />
+          </div>
+          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-3">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="h-24 rounded-lg border border-[rgb(var(--border))] bg-[rgb(var(--card))] animate-pulse" />
+            ))}
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <TopNav title="Dashboard" />
       <div className="flex-1 p-6 max-w-7xl w-full mx-auto space-y-6">
-        {/* Hero stats */}
-        <div data-tour="stats-row" className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <StatCard
-            label="Solved"
-            value={`${totalSolved} / ${totalQuestions || 150}`}
-            icon={<CheckCircle2 className="h-4 w-4" />}
-          />
-          <StatCard
-            label="Streak"
-            value={
-              <span className="flex items-center gap-2">
-                <Flame className="h-5 w-5 text-orange-500" />
-                {stats.data?.streak ?? 0} days
-              </span>
-            }
-            accent="orange"
-          />
-          <StatCard
-            label="Topics"
-            value={`${topicsStarted} / ${totalTopics}`}
-            icon={<Layers className="h-4 w-4" />}
-            accent="emerald"
-          />
-          <StatCard
-            label="This week"
-            value={`+${thisWeekSolved}`}
-            hint="solved"
-            icon={<TrendingUp className="h-4 w-4" />}
-            accent="amber"
-          />
-        </div>
+        
 
         {/* Next-up suggestion */}
         <div data-tour="next-up">

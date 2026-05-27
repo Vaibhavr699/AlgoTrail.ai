@@ -1,5 +1,5 @@
+import bcrypt
 from fastapi import APIRouter, Depends, HTTPException
-from passlib.context import CryptContext
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -7,7 +7,14 @@ from app.database import get_db
 from app.models import User
 
 router = APIRouter()
-pwd_ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+def hash_password(password: str) -> str:
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+
+
+def verify_password(password: str, hashed: str) -> bool:
+    return bcrypt.checkpw(password.encode(), hashed.encode())
 
 
 class RegisterRequest(BaseModel):
@@ -47,7 +54,7 @@ def register(body: RegisterRequest, db: Session = Depends(get_db)):
     user = User(
         email=body.email,
         name=body.name,
-        hashed_password=pwd_ctx.hash(body.password),
+        hashed_password=hash_password(body.password),
         provider="credentials",
     )
     db.add(user)
@@ -61,7 +68,7 @@ def login(body: LoginRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == body.email).first()
     if user is None or not user.hashed_password:
         raise HTTPException(status_code=401, detail="Invalid email or password.")
-    if not pwd_ctx.verify(body.password, user.hashed_password):
+    if not verify_password(body.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid email or password.")
     return UserOut(id=user.id, email=user.email, name=user.name, image=user.image)
 

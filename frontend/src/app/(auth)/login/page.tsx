@@ -6,6 +6,7 @@ import { signIn } from "next-auth/react";
 import { FormEvent, useState, Suspense } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { DotsLoader } from "@/components/ui/dots-loader";
+import { useAuthStore } from "@/stores/auth.store";
 import { cn } from "@/lib/utils";
 
 function LoginForm() {
@@ -43,6 +44,20 @@ function LoginForm() {
     }
 
     setSubmitting(true);
+
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+    try {
+      const loginRes = await fetch(`${apiUrl}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      if (loginRes.ok) {
+        const user = await loginRes.json();
+        useAuthStore.getState().setUser({ id: user.id, name: user.name, email: user.email });
+      }
+    } catch {}
+
     const res = await signIn("credentials", {
       email,
       password,
