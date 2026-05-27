@@ -3,17 +3,13 @@
 import { useMemo } from "react";
 import Link from "next/link";
 import {
-  Flame,
   TrendingUp,
-  Layers,
-  CheckCircle2,
   Trophy,
   Target,
   Zap,
   ArrowRight,
 } from "lucide-react";
 import { TopNav } from "@/components/layout/top-nav";
-import { StatCard } from "@/components/dashboard/stat-card";
 import { TodaySuggestion } from "@/components/dashboard/today-suggestion";
 import { ActivityHeatmap } from "@/components/dashboard/activity-heatmap";
 import { TopicProgressCard } from "@/components/dashboard/topic-progress-card";
@@ -58,18 +54,6 @@ export default function DashboardPage() {
     }
     return { nextQuestion: null, nextTopic: null };
   }, [topics.data, progress.data, topicQueries]);
-
-  const totalQuestions = topicQueries.reduce(
-    (acc, q) => acc + (q.data?.questions.length ?? 0),
-    0
-  );
-  const totalSolved = stats.data?.total_solved ?? 0;
-  const topicsStarted = (stats.data?.by_topic ?? []).filter((t) => t.solved > 0).length;
-  const totalTopics = topics.data?.length ?? 0;
-
-  const thisWeekSolved = (stats.data?.activity ?? [])
-    .slice(-7)
-    .reduce((sum, a) => sum + a.count, 0);
 
   const overallReadiness = useMemo(() => {
     if (!stats.data) return 0;

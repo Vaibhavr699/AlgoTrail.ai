@@ -4,7 +4,6 @@ import { useState } from "react";
 import { X } from "lucide-react";
 import { useUIStore } from "@/stores/ui.store";
 import { AgentAvatar } from "./agent-avatar";
-import { cn } from "@/lib/utils";
 
 const TIPS = [
   "Try solving one problem a day — consistency beats intensity.",
