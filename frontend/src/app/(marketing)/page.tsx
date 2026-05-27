@@ -240,27 +240,6 @@ export default function LandingPage() {
 
 /* ─── DATA ─────────────────────────────────────────────────── */
 
-const STEPS = [
-  {
-    step: "01",
-    title: "Pick Your Topic",
-    desc: "Start with Arrays & Hashing or jump to any topic you need. The roadmap is ordered but flexible.",
-    icon: <Compass className="h-6 w-6" />,
-  },
-  {
-    step: "02",
-    title: "Solve the Next Problem",
-    desc: "We tell you exactly which problem to solve next. No decision fatigue, just focused practice.",
-    icon: <Sparkles className="h-6 w-6" />,
-  },
-  {
-    step: "03",
-    title: "Build Your Streak",
-    desc: "Track your progress, maintain your streak, and watch your interview readiness score climb.",
-    icon: <Flame className="h-6 w-6" />,
-  },
-];
-
 const TRACK_FEATURES = [
   { label: "Activity heatmap built from real solves", icon: <BarChart3 className="h-4 w-4" /> },
   { label: "Streak tracking with daily reminders", icon: <Flame className="h-4 w-4" /> },
