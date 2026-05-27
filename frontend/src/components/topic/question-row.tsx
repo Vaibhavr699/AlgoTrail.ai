@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Check, Circle, RotateCcw, ExternalLink, Loader2 } from "lucide-react";
+import { Check, Circle, RotateCcw, ExternalLink } from "lucide-react";
+import { DotsLoader } from "@/components/ui/dots-loader";
 import { Badge } from "@/components/ui/badge";
 import { DifficultyBadge } from "@/components/topic/difficulty-badge";
 import { PatternTag } from "@/components/topic/pattern-tag";
@@ -51,7 +52,7 @@ export function QuestionRow({
         )}
       >
         {update.isPending ? (
-          <Loader2 className="h-3 w-3 animate-spin" />
+          <DotsLoader size="sm" />
         ) : status === "SOLVED" ? (
           <Check className="h-3 w-3" />
         ) : status === "NEEDS_REVIEW" ? (

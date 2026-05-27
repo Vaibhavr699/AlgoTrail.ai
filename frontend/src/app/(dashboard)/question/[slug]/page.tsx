@@ -13,12 +13,13 @@ import {
   Pause,
   RotateCcw,
   CheckCircle2,
-  Loader2,
   ChevronRight,
   Sparkles,
   StickyNote,
   Save,
 } from "lucide-react";
+import { DotsLoader } from "@/components/ui/dots-loader";
+import { PageLoader } from "@/components/ui/page-loader";
 import { TopNav } from "@/components/layout/top-nav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -92,9 +93,7 @@ export default function QuestionDetailPage() {
     return (
       <>
         <TopNav title="Loading..." />
-        <div className="flex-1 flex items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[rgb(var(--muted))]" />
-        </div>
+        <PageLoader />
       </>
     );
   }
@@ -249,7 +248,7 @@ function StatusButton({ questionId, currentStatus }: { questionId: string; curre
       className={cn("inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors", colors[currentStatus])}
     >
       {currentStatus === "SOLVED" && <CheckCircle2 className="h-4 w-4" />}
-      {update.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : formatStatus(currentStatus)}
+      {update.isPending ? <DotsLoader size="sm" /> : formatStatus(currentStatus)}
     </button>
   );
 }
@@ -279,7 +278,7 @@ function ProblemTab({ leetcodeSlug, question }: { leetcodeSlug: string | null; q
     return (
       <Card>
         <CardContent className="py-10 flex items-center justify-center gap-2">
-          <Loader2 className="h-5 w-5 animate-spin" />
+          <DotsLoader size="md" className="text-brand-500" />
           <span className="text-sm text-[rgb(var(--muted))]">Loading problem from LeetCode...</span>
         </CardContent>
       </Card>
@@ -404,7 +403,7 @@ function HintsTab({ questionSlug, existingHint }: { questionSlug: string; existi
             className="inline-flex items-center gap-2 rounded-lg bg-amber-500 text-white px-4 py-2 text-sm font-medium hover:bg-amber-600 transition-colors disabled:opacity-50"
           >
             {hintMutation.isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <DotsLoader size="sm" className="text-white" />
             ) : (
               <Lightbulb className="h-4 w-4" />
             )}
@@ -456,7 +455,7 @@ function ExplainTab({ questionSlug }: { questionSlug: string }) {
               className="inline-flex items-center gap-2 rounded-lg bg-brand-500 text-white px-4 py-2 text-sm font-medium hover:bg-brand-600 transition-colors disabled:opacity-50"
             >
               {explainMutation.isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <DotsLoader size="sm" className="text-white" />
               ) : (
                 <Sparkles className="h-4 w-4" />
               )}
@@ -531,7 +530,7 @@ function ExplainTab({ questionSlug }: { questionSlug: string }) {
           disabled={explainMutation.isPending}
           className="text-sm text-brand-600 hover:text-brand-700 flex items-center gap-1"
         >
-          {explainMutation.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RotateCcw className="h-3.5 w-3.5" />}
+          {explainMutation.isPending ? <DotsLoader size="sm" /> : <RotateCcw className="h-3.5 w-3.5" />}
           Regenerate
         </button>
       </CardContent>
@@ -570,7 +569,7 @@ function NotesTab({ questionId, questionSlug }: { questionId: string; questionSl
             disabled={upsertNote.isPending}
             className="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 text-white px-3 py-1.5 text-sm font-medium hover:bg-brand-600 transition-colors disabled:opacity-50"
           >
-            {upsertNote.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
+            {upsertNote.isPending ? <DotsLoader size="sm" className="text-white" /> : <Save className="h-3.5 w-3.5" />}
             Save
           </button>
         </div>
@@ -666,7 +665,7 @@ function TimerCard({ questionId, currentTimeSpent }: { questionId: string; curre
               disabled={update.isPending}
               className="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 text-white px-4 py-2 text-sm font-medium hover:bg-brand-600 transition-colors disabled:opacity-50"
             >
-              {update.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
+              {update.isPending ? <DotsLoader size="sm" className="text-white" /> : <Save className="h-3.5 w-3.5" />}
               Save
             </button>
           )}

@@ -15,7 +15,7 @@ const DASHBOARD_STEPS: TourStep[] = [
   {
     target: "next-up",
     title: "What to Solve Next",
-    message: "Aria picks the next problem for you based on the optimal learning order. No more scrolling through random lists — just click and start solving.",
+    message: "Sage picks the next problem for you based on the optimal learning order. No more scrolling through random lists — just click and start solving.",
     position: "bottom",
   },
   {

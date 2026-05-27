@@ -6,7 +6,6 @@ import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
-  Loader2,
   Lightbulb,
   AlertTriangle,
   Sparkles,
@@ -21,6 +20,8 @@ import {
   Link2,
   ChevronRight,
 } from "lucide-react";
+import { DotsLoader } from "@/components/ui/dots-loader";
+import { PageLoader } from "@/components/ui/page-loader";
 import { TopNav } from "@/components/layout/top-nav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AgentAvatar } from "@/components/onboarding/agent-avatar";
@@ -48,16 +49,7 @@ export default function PatternDetailPage() {
     return (
       <>
         <TopNav title={patternName} />
-        <div className="flex-1 flex flex-col items-center justify-center gap-4 p-6">
-          <AgentAvatar size="lg" pulse />
-          <div className="text-center">
-            <p className="text-sm font-semibold">Aria is preparing your lesson...</p>
-            <p className="text-xs text-[rgb(var(--muted))] mt-1">
-              Building a deep dive on <span className="font-medium">{patternName}</span>
-            </p>
-          </div>
-          <Loader2 className="h-6 w-6 animate-spin text-brand-500" />
-        </div>
+        <PageLoader />
       </>
     );
   }
@@ -108,7 +100,7 @@ export default function PatternDetailPage() {
               className="inline-flex items-center gap-2 rounded-xl bg-brand-500 text-white px-4 py-2.5 text-sm font-medium hover:bg-brand-600 transition-colors shrink-0"
             >
               <MessageCircle className="h-4 w-4" />
-              Ask Aria
+              Ask Sage
             </button>
           </div>
         </div>
@@ -327,7 +319,7 @@ function TemplateCard({ patternName, defaultTemplate }: { patternName: string; d
         <div className="relative">
           {loading && (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-50/80 dark:bg-gray-900/80 rounded-lg z-10">
-              <Loader2 className="h-5 w-5 animate-spin text-brand-500" />
+              <DotsLoader size="md" className="text-brand-500" />
             </div>
           )}
           <pre className="rounded-lg bg-gray-50 dark:bg-gray-900 p-4 text-xs font-mono overflow-x-auto leading-relaxed">
@@ -396,7 +388,7 @@ function PatternChatbot({ patternName, onClose }: { patternName: string; onClose
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: "assistant",
-      content: `Hey! I'm Aria. I see you're learning **${patternName}**. Ask me anything — how it works, when to use it, walk through an example, or compare it with another pattern. I'm here to help!`,
+      content: `Hey! I'm Sage. I see you're learning **${patternName}**. Ask me anything — how it works, when to use it, walk through an example, or compare it with another pattern. I'm here to help!`,
     },
   ]);
   const [input, setInput] = useState("");
@@ -438,7 +430,7 @@ function PatternChatbot({ patternName, onClose }: { patternName: string; onClose
         <div className="flex items-center gap-3 px-4 py-3 border-b border-[rgb(var(--border))] bg-brand-500 text-white">
           <AgentAvatar size="sm" />
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold">Aria</p>
+            <p className="text-sm font-semibold">Sage</p>
             <p className="text-[10px] opacity-80">Helping with {patternName}</p>
           </div>
           <button onClick={onClose} className="h-7 w-7 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">

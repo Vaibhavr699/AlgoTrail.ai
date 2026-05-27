@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { FormEvent, useMemo, useState } from "react";
-import { Eye, EyeOff, Loader2, Check, ArrowUpRight } from "lucide-react";
+import { Eye, EyeOff, Check } from "lucide-react";
+import { DotsLoader } from "@/components/ui/dots-loader";
 import { cn } from "@/lib/utils";
 
 export default function SignupPage() {
@@ -79,36 +80,15 @@ export default function SignupPage() {
   return (
     <div>
       <div>
-        <h1 className="text-3xl font-extrabold tracking-[-0.02em] text-forest-ink">
+        <h1 className="text-2xl font-bold tracking-tight text-forest-ink">
           Create your account
         </h1>
-        <p className="mt-2 text-sm text-forest-ink/65">
-          Free while in beta. Cancel anytime — there&apos;s nothing to cancel.
+        <p className="mt-2 text-sm text-forest-ink/55">
+          Free while in beta. Start mastering DSA patterns today.
         </p>
       </div>
 
-      <div className="mt-7 grid gap-2">
-        <SocialButton
-          onClick={() => onSocial("github")}
-          disabled={anyLoading}
-          loading={socialLoading === "github"}
-        >
-          <GithubGlyph />
-          Continue with GitHub
-        </SocialButton>
-        <SocialButton
-          onClick={() => onSocial("google")}
-          disabled={anyLoading}
-          loading={socialLoading === "google"}
-        >
-          <GoogleGlyph />
-          Continue with Google
-        </SocialButton>
-      </div>
-
-      <Divider />
-
-      <form className="space-y-4" onSubmit={onSubmit} noValidate>
+      <form className="mt-8 space-y-4" onSubmit={onSubmit} noValidate>
         <Field
           id="name"
           name="name"
@@ -131,7 +111,7 @@ export default function SignupPage() {
         <div>
           <label
             htmlFor="password"
-            className="text-xs font-semibold text-forest-ink"
+            className="text-xs font-semibold text-forest-ink/70"
           >
             Password
           </label>
@@ -150,7 +130,7 @@ export default function SignupPage() {
             <button
               type="button"
               onClick={() => setShowPw((v) => !v)}
-              className="absolute inset-y-0 right-0 inline-flex w-11 items-center justify-center text-forest-ink/55 hover:text-forest-ink"
+              className="absolute inset-y-0 right-0 inline-flex w-11 items-center justify-center text-forest-ink/40 hover:text-forest-ink transition-colors"
               aria-label={showPw ? "Hide password" : "Show password"}
             >
               {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -159,7 +139,7 @@ export default function SignupPage() {
           <StrengthMeter strength={strength} hasInput={password.length > 0} />
         </div>
 
-        <label className="flex items-start gap-2 text-xs text-forest-ink/65">
+        <label className="flex items-start gap-2 text-xs text-forest-ink/55">
           <input
             type="checkbox"
             name="accept"
@@ -183,17 +163,34 @@ export default function SignupPage() {
         <button
           type="submit"
           disabled={anyLoading}
-          className="group inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-forest-500 pl-6 pr-2 text-sm font-semibold text-white hover:bg-forest-600 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60 disabled:pointer-events-none"
+          className="flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-forest-500 text-sm font-semibold text-white hover:bg-forest-600 transition-all duration-200 disabled:opacity-60 disabled:pointer-events-none"
         >
-          {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
-          <span className="pr-2">Create account</span>
-          <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white text-forest-700 transition-transform duration-200 group-hover:rotate-45">
-            <ArrowUpRight className="h-4 w-4" strokeWidth={2.4} />
-          </span>
+          {submitting ? <DotsLoader size="sm" className="text-white" /> : "Create account"}
         </button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-forest-ink/60">
+      <Divider />
+
+      <div className="grid grid-cols-2 gap-3">
+        <SocialButton
+          onClick={() => onSocial("google")}
+          disabled={anyLoading}
+          loading={socialLoading === "google"}
+        >
+          <GoogleGlyph />
+          Google
+        </SocialButton>
+        <SocialButton
+          onClick={() => onSocial("github")}
+          disabled={anyLoading}
+          loading={socialLoading === "github"}
+        >
+          <GithubGlyph />
+          GitHub
+        </SocialButton>
+      </div>
+
+      <p className="mt-8 text-center text-sm text-forest-ink/55">
         Already have one?{" "}
         <Link href="/login" className="font-semibold text-forest-600 hover:text-forest-700">
           Sign in
@@ -204,7 +201,7 @@ export default function SignupPage() {
 }
 
 const INPUT_CLASS =
-  "block w-full rounded-xl border border-forest-900/12 bg-white px-3.5 py-2.5 text-sm placeholder:text-forest-ink/40 focus:border-forest-500 focus:outline-none focus:ring-2 focus:ring-forest-500/20 transition disabled:opacity-50";
+  "block w-full rounded-lg border border-forest-900/12 bg-white px-3.5 py-2.5 text-sm placeholder:text-forest-ink/35 focus:border-forest-500 focus:outline-none focus:ring-2 focus:ring-forest-500/20 transition disabled:opacity-50";
 
 function Field({
   id,
@@ -216,7 +213,7 @@ function Field({
     <div>
       <label
         htmlFor={id}
-        className="text-xs font-semibold text-forest-ink"
+        className="text-xs font-semibold text-forest-ink/70"
       >
         {label}
       </label>
@@ -227,10 +224,10 @@ function Field({
 
 function Divider() {
   return (
-    <div className="my-6 flex items-center gap-3 text-xs text-forest-ink/45">
-      <span className="h-px flex-1 bg-forest-900/10" />
-      <span>or with email</span>
-      <span className="h-px flex-1 bg-forest-900/10" />
+    <div className="my-6 flex items-center gap-3 text-xs text-forest-ink/40">
+      <span className="h-px flex-1 bg-forest-900/8" />
+      <span>or</span>
+      <span className="h-px flex-1 bg-forest-900/8" />
     </div>
   );
 }
@@ -251,9 +248,9 @@ function SocialButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="inline-flex items-center justify-center gap-2 rounded-full border border-forest-900/12 bg-white px-3 py-2.5 text-sm font-medium text-forest-ink hover:bg-forest-50 transition disabled:opacity-50 disabled:pointer-events-none"
+      className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-forest-900/10 bg-white px-3 py-2.5 text-sm font-medium text-forest-ink hover:bg-gray-50 transition disabled:opacity-50 disabled:pointer-events-none"
     >
-      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : children}
+      {loading ? <DotsLoader size="sm" /> : children}
     </button>
   );
 }

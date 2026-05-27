@@ -32,7 +32,7 @@ export function WelcomeModal() {
             <AgentAvatar size="lg" pulse />
           </div>
           <h2 className="text-xl font-bold tracking-tight">
-            Hey! I&apos;m Aria
+            Hey! I&apos;m Sage
           </h2>
           <p className="mt-1 text-sm text-[rgb(var(--muted))]">
             Your AI study guide on AlgoTrail

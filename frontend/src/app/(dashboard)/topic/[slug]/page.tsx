@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { PageLoader } from "@/components/ui/page-loader";
 import { TopNav } from "@/components/layout/top-nav";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -41,8 +42,8 @@ export default function TopicDetailPage({ params }: { params: { slug: string } }
   if (topic.isLoading) {
     return (
       <>
-        <TopNav title="Loading…" />
-        <div className="p-6 text-sm text-[rgb(var(--muted))]">Loading topic…</div>
+        <TopNav title="Loading..." />
+        <PageLoader />
       </>
     );
   }

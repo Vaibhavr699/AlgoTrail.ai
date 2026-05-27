@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { FormEvent, useState, Suspense } from "react";
-import { Eye, EyeOff, Loader2, ArrowUpRight } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
+import { DotsLoader } from "@/components/ui/dots-loader";
 import { cn } from "@/lib/utils";
 
 function LoginForm() {
@@ -62,75 +63,49 @@ function LoginForm() {
   return (
     <div>
       <div>
-        <h1 className="text-3xl font-extrabold tracking-[-0.02em] text-forest-ink">
-          Welcome back
+        <h1 className="text-2xl font-bold tracking-tight text-forest-ink">
+          Welcome back!
         </h1>
-        <p className="mt-2 text-sm text-forest-ink/65">
-          Sign in to pick up your roadmap exactly where you left it.
+        <h2 className="text-2xl font-bold tracking-tight text-forest-ink">
+          Login to your account
+        </h2>
+        <p className="mt-2 text-sm text-forest-ink/55">
+          It&apos;s nice to see you again. Ready to code?
         </p>
       </div>
 
-      <div className="mt-7 grid gap-2">
-        <SocialButton
-          onClick={() => onSocial("github")}
-          disabled={anyLoading}
-          loading={socialLoading === "github"}
-        >
-          <GithubGlyph />
-          Continue with GitHub
-        </SocialButton>
-        <SocialButton
-          onClick={() => onSocial("google")}
-          disabled={anyLoading}
-          loading={socialLoading === "google"}
-        >
-          <GoogleGlyph />
-          Continue with Google
-        </SocialButton>
-      </div>
-
-      <Divider />
-
-      <form className="space-y-4" onSubmit={onSubmit} noValidate>
+      <form className="mt-8 space-y-4" onSubmit={onSubmit} noValidate>
         <Field
           id="email"
           name="email"
           type="email"
-          label="Email"
+          label="Your username or email"
           autoComplete="email"
-          placeholder="you@domain.com"
+          placeholder="Your username or email"
           disabled={anyLoading}
         />
 
         <div>
-          <div className="flex items-center justify-between">
-            <label
-              htmlFor="password"
-              className="text-xs font-semibold text-forest-ink"
-            >
-              Password
-            </label>
-            <Link
-              href="/forgot-password"
-              className="text-xs font-medium text-forest-600 hover:text-forest-700"
-            >
-              Forgot password?
-            </Link>
-          </div>
+          <label
+            htmlFor="password"
+            className="text-xs font-semibold text-forest-ink/70"
+          >
+            Your password
+          </label>
           <div className="relative mt-1.5">
             <input
               id="password"
               name="password"
               type={showPw ? "text" : "password"}
               autoComplete="current-password"
-              placeholder="••••••••"
+              placeholder="Your password"
               disabled={anyLoading}
               className={INPUT_CLASS + " pr-10"}
             />
             <button
               type="button"
               onClick={() => setShowPw((v) => !v)}
-              className="absolute inset-y-0 right-0 inline-flex w-11 items-center justify-center text-forest-ink/55 hover:text-forest-ink"
+              className="absolute inset-y-0 right-0 inline-flex w-11 items-center justify-center text-forest-ink/40 hover:text-forest-ink transition-colors"
               aria-label={showPw ? "Hide password" : "Show password"}
             >
               {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -147,20 +122,54 @@ function LoginForm() {
         <button
           type="submit"
           disabled={anyLoading}
-          className="group inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-forest-500 pl-6 pr-2 text-sm font-semibold text-white hover:bg-forest-600 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60 disabled:pointer-events-none"
+          className="flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-forest-500 text-sm font-semibold text-white hover:bg-forest-600 transition-all duration-200 disabled:opacity-60 disabled:pointer-events-none"
         >
-          {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
-          <span className="pr-2">Sign in</span>
-          <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white text-forest-700 transition-transform duration-200 group-hover:rotate-45">
-            <ArrowUpRight className="h-4 w-4" strokeWidth={2.4} />
-          </span>
+          {submitting ? <DotsLoader size="sm" className="text-white" /> : "Log In"}
         </button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-forest-ink/60">
-        New here?{" "}
+      <div className="mt-4 flex items-center justify-between text-xs">
+        <label className="flex items-center gap-2 text-forest-ink/55">
+          <input
+            type="checkbox"
+            defaultChecked
+            className="h-3.5 w-3.5 rounded border-forest-900/15 text-forest-500 focus:ring-forest-500/30"
+          />
+          Remember me
+        </label>
+        <Link
+          href="/forgot-password"
+          className="font-medium text-forest-600 hover:text-forest-700 transition-colors"
+        >
+          Forgot password?
+        </Link>
+      </div>
+
+      <Divider />
+
+      <div className="grid grid-cols-2 gap-3">
+        <SocialButton
+          onClick={() => onSocial("google")}
+          disabled={anyLoading}
+          loading={socialLoading === "google"}
+        >
+          <GoogleGlyph />
+          Google
+        </SocialButton>
+        <SocialButton
+          onClick={() => onSocial("github")}
+          disabled={anyLoading}
+          loading={socialLoading === "github"}
+        >
+          <GithubGlyph />
+          GitHub
+        </SocialButton>
+      </div>
+
+      <p className="mt-8 text-center text-sm text-forest-ink/55">
+        Don&apos;t have an account?{" "}
         <Link href="/signup" className="font-semibold text-forest-600 hover:text-forest-700">
-          Create an account
+          Sign up
         </Link>
       </p>
     </div>
@@ -176,7 +185,7 @@ export default function LoginPage() {
 }
 
 const INPUT_CLASS =
-  "block w-full rounded-xl border border-forest-900/12 bg-white px-3.5 py-2.5 text-sm placeholder:text-forest-ink/40 focus:border-forest-500 focus:outline-none focus:ring-2 focus:ring-forest-500/20 transition disabled:opacity-50";
+  "block w-full rounded-lg border border-forest-900/12 bg-white px-3.5 py-2.5 text-sm placeholder:text-forest-ink/35 focus:border-forest-500 focus:outline-none focus:ring-2 focus:ring-forest-500/20 transition disabled:opacity-50";
 
 function Field({
   id,
@@ -188,7 +197,7 @@ function Field({
     <div>
       <label
         htmlFor={id}
-        className="text-xs font-semibold text-forest-ink"
+        className="text-xs font-semibold text-forest-ink/70"
       >
         {label}
       </label>
@@ -199,10 +208,10 @@ function Field({
 
 function Divider() {
   return (
-    <div className="my-6 flex items-center gap-3 text-xs text-forest-ink/45">
-      <span className="h-px flex-1 bg-forest-900/10" />
-      <span>or with email</span>
-      <span className="h-px flex-1 bg-forest-900/10" />
+    <div className="my-6 flex items-center gap-3 text-xs text-forest-ink/40">
+      <span className="h-px flex-1 bg-forest-900/8" />
+      <span>or</span>
+      <span className="h-px flex-1 bg-forest-900/8" />
     </div>
   );
 }
@@ -223,9 +232,9 @@ function SocialButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="inline-flex items-center justify-center gap-2 rounded-full border border-forest-900/12 bg-white px-3 py-2.5 text-sm font-medium text-forest-ink hover:bg-forest-50 transition disabled:opacity-50 disabled:pointer-events-none"
+      className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-forest-900/10 bg-white px-3 py-2.5 text-sm font-medium text-forest-ink hover:bg-gray-50 transition disabled:opacity-50 disabled:pointer-events-none"
     >
-      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : children}
+      {loading ? <DotsLoader size="sm" /> : children}
     </button>
   );
 }

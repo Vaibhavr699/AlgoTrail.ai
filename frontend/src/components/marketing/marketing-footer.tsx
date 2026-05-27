@@ -20,10 +20,10 @@ export function MarketingFooter() {
         <FooterColumn
           title="Product"
           links={[
-            { href: "/#roadmap", label: "Roadmap" },
-            { href: "/#pricing", label: "Pricing" },
-            { href: "/#about", label: "About" },
+            { href: "/", label: "Home" },
+            { href: "/roadmap", label: "Roadmap" },
             { href: "/dashboard", label: "Dashboard" },
+            { href: "/stats", label: "Stats" },
           ]}
         />
         <FooterColumn
@@ -31,23 +31,25 @@ export function MarketingFooter() {
           links={[
             { href: "/login", label: "Sign in" },
             { href: "/signup", label: "Create account" },
-            { href: "/forgot-password", label: "Forgot password" },
+            { href: "/settings", label: "Settings" },
           ]}
         />
         <FooterColumn
-          title="Resources"
+          title="Legal"
           links={[
-            { href: "/#faq", label: "FAQ" },
-            { href: "/contact", label: "Contact" },
-            { href: "/changelog", label: "Changelog" },
+            { href: "/terms", label: "Terms of Service" },
+            { href: "/privacy", label: "Privacy Policy" },
           ]}
         />
       </div>
 
       <div className="border-t border-white/10">
         <div className="mx-auto max-w-7xl px-6 lg:px-10 py-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-white/55">
-          <p>© {year} AlgoTrail.ai. Built for people who&apos;d rather learn the pattern than grind the count.</p>
-          <p className="font-mono">v0.1</p>
+          <p>&copy; {year} AlgoTrail.ai. Built for people who&apos;d rather learn the pattern than grind the count.</p>
+          <div className="flex items-center gap-4">
+            <Link href="/terms" className="hover:text-white/80 transition-colors">Terms</Link>
+            <Link href="/privacy" className="hover:text-white/80 transition-colors">Privacy</Link>
+          </div>
         </div>
       </div>
     </footer>

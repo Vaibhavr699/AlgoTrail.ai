@@ -32,7 +32,7 @@ export function AgentBubble() {
           <div className="flex items-center gap-2 px-4 pt-3 pb-2">
             <AgentAvatar size="sm" />
             <div className="flex-1">
-              <p className="text-sm font-semibold">Aria</p>
+              <p className="text-sm font-semibold">Sage</p>
               <p className="text-[10px] text-[rgb(var(--muted))]">Quick Tip</p>
             </div>
             <button
@@ -58,7 +58,7 @@ export function AgentBubble() {
             ? "bg-gray-200 dark:bg-gray-700"
             : "bg-brand-500 hover:bg-brand-600"
         )}
-        aria-label="Talk to Aria"
+        aria-label="Talk to Sage"
       >
         {open ? (
           <X className="h-5 w-5 text-[rgb(var(--foreground))]" />

@@ -13,7 +13,7 @@ export interface TourStep {
   position?: "top" | "bottom" | "left" | "right";
 }
 
-const AGENT_NAME = "Aria";
+const AGENT_NAME = "Sage";
 
 export function OnboardingTour({ steps }: { steps: TourStep[] }) {
   const { onboardingComplete, onboardingStep, setOnboardingStep, completeOnboarding } = useUIStore();

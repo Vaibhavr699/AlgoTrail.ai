@@ -9,9 +9,9 @@ import { PillLink } from "@/components/marketing/pill-button";
 
 const LINKS = [
   { href: "/", label: "Home" },
-  { href: "/#roadmap", label: "Roadmap" },
-  { href: "/#pricing", label: "Pricing" },
-  { href: "/#about", label: "About" },
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/terms", label: "Terms" },
+  { href: "/privacy", label: "Privacy" },
 ];
 
 export function MarketingNav() {
