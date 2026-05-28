@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Terms of Service — AlgoTrail.ai",
-};
+export const metadata: Metadata = buildMetadata({
+  title: "Terms of Service",
+  description:
+    "The terms and conditions governing your use of AlgoTrail.ai and its DSA roadmap tracking features.",
+  path: "/terms",
+});
 
 export default function TermsPage() {
   return (

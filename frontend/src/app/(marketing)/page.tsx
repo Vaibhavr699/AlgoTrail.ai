@@ -1,13 +1,67 @@
+import type { Metadata } from "next";
 import { Compass, Sparkles, Flame, Trophy, BarChart3, Brain } from "lucide-react";
 import { PillLink } from "@/components/marketing/pill-button";
 import { HeroLottie } from "@/components/marketing/hero-lottie";
 import { SectionLottie } from "@/components/marketing/section-lottie";
 import { LogoMarquee } from "@/components/marketing/logo-marquee";
 import { Reveal, RevealGroup, RevealItem } from "@/components/marketing/reveal";
+import {
+  SITE_URL,
+  SITE_NAME,
+  SITE_TAGLINE,
+  SITE_DESCRIPTION,
+} from "@/lib/seo";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: `${SITE_NAME} — ${SITE_TAGLINE}`,
+  },
+  description: SITE_DESCRIPTION,
+  alternates: { canonical: "/" },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${SITE_URL}/#organization`,
+      name: SITE_NAME,
+      url: SITE_URL,
+      logo: `${SITE_URL}/AlgoTrailnobg.png`,
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: SITE_NAME,
+      description: SITE_DESCRIPTION,
+      publisher: { "@id": `${SITE_URL}/#organization` },
+      inLanguage: "en-US",
+    },
+    {
+      "@type": "SoftwareApplication",
+      name: SITE_NAME,
+      applicationCategory: "EducationalApplication",
+      operatingSystem: "Web",
+      url: SITE_URL,
+      description: SITE_DESCRIPTION,
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD",
+      },
+    },
+  ],
+};
 
 export default function LandingPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* ─── HERO ──────────────────────────────────────────────── */}
       <section className="relative">
         <div className="mx-auto max-w-7xl px-6 lg:px-10 pt-20 lg:pt-32 pb-20 lg:pb-32 grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">

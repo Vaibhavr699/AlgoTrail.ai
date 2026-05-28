@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy — AlgoTrail.ai",
-};
+export const metadata: Metadata = buildMetadata({
+  title: "Privacy Policy",
+  description:
+    "How AlgoTrail.ai collects, uses, and protects your account information and learning progress data.",
+  path: "/privacy",
+});
 
 export default function PrivacyPage() {
   return (
