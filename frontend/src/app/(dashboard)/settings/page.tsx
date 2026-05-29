@@ -1,6 +1,8 @@
 "use client";
 
 import { useSession, signOut } from "next-auth/react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import {
   User,
@@ -13,9 +15,13 @@ import {
   RotateCcw,
   Trash2,
   ExternalLink,
+  Sparkles,
+  CreditCard,
 } from "lucide-react";
 import { TopNav } from "@/components/layout/top-nav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DotsLoader } from "@/components/ui/dots-loader";
+import { api } from "@/lib/api";
 import { useUIStore } from "@/stores/ui.store";
 import { cn } from "@/lib/utils";
 
@@ -68,6 +74,9 @@ export default function SettingsPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Billing */}
+        <BillingCard />
 
         {/* Appearance */}
         <Card>
@@ -215,6 +224,118 @@ export default function SettingsPage() {
         </p>
       </div>
     </>
+  );
+}
+
+function BillingCard() {
+  const qc = useQueryClient();
+  const { data, isLoading } = useQuery({ queryKey: ["billing-me"], queryFn: api.billing.me });
+  const [notice, setNotice] = useState<"success" | "cancel" | null>(null);
+
+  const checkout = useMutation({
+    mutationFn: api.billing.checkout,
+    onSuccess: (r) => {
+      window.location.href = r.url;
+    },
+  });
+  const portal = useMutation({
+    mutationFn: api.billing.portal,
+    onSuccess: (r) => {
+      window.location.href = r.url;
+    },
+  });
+
+  // Read Stripe's redirect result without useSearchParams (avoids a Suspense boundary).
+  useEffect(() => {
+    const checkoutParam = new URLSearchParams(window.location.search).get("checkout");
+    if (checkoutParam === "success") {
+      setNotice("success");
+      qc.invalidateQueries({ queryKey: ["billing-me"] });
+    } else if (checkoutParam === "cancel") {
+      setNotice("cancel");
+    }
+  }, [qc]);
+
+  const plan = data?.plan ?? "free";
+  const isPro = plan === "pro";
+  const configured = data?.billing_configured ?? false;
+  const busy = checkout.isPending || portal.isPending;
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base flex items-center gap-2">
+          <CreditCard className="h-4 w-4" />
+          Plan &amp; Billing
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {notice === "success" && (
+          <p className="rounded-lg bg-brand-50 dark:bg-brand-900/20 px-3 py-2 text-sm text-brand-700 dark:text-brand-300">
+            🎉 You&apos;re on Pro now. Thanks for the support!
+          </p>
+        )}
+        {notice === "cancel" && (
+          <p className="rounded-lg bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-[rgb(var(--muted))]">
+            Checkout canceled — no charge was made.
+          </p>
+        )}
+
+        {isLoading ? (
+          <DotsLoader size="sm" />
+        ) : (
+          <>
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-sm font-medium flex items-center gap-1.5">
+                  {isPro && <Sparkles className="h-4 w-4 text-brand-500" />}
+                  {isPro ? "Pro" : "Free"} plan
+                </p>
+                <p className="text-xs text-[rgb(var(--muted))]">
+                  {data?.daily_limit} AI requests/day
+                  {data?.status ? ` · ${data.status}` : ""}
+                </p>
+              </div>
+
+              {isPro ? (
+                <button
+                  onClick={() => portal.mutate()}
+                  disabled={busy}
+                  className="inline-flex items-center gap-2 rounded-lg border border-[rgb(var(--border))] px-4 py-2 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-60"
+                >
+                  {portal.isPending ? <DotsLoader size="sm" /> : "Manage billing"}
+                </button>
+              ) : (
+                <button
+                  onClick={() => checkout.mutate()}
+                  disabled={busy || !configured}
+                  title={!configured ? "Billing isn't enabled yet" : undefined}
+                  className="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-600 transition-colors disabled:opacity-60 disabled:pointer-events-none"
+                >
+                  {checkout.isPending ? (
+                    <DotsLoader size="sm" className="text-white" />
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4" />
+                      Upgrade to Pro
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+
+            {!configured && !isPro && (
+              <p className="text-xs text-[rgb(var(--muted))]">
+                Pro upgrades are coming soon.
+              </p>
+            )}
+            {(checkout.isError || portal.isError) && (
+              <p className="text-xs text-red-500">Something went wrong. Please try again.</p>
+            )}
+          </>
+        )}
+      </CardContent>
+    </Card>
   );
 }
 

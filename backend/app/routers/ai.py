@@ -7,6 +7,7 @@ from app.database import get_db
 from app.models import Question, Topic, User
 from app.schemas import ExplainRequest, GeneratePathRequest, HintRequest, PatternTeachRequest, PatternTemplateRequest, PatternChatRequest
 from app.services.openai_service import explain_solution, generate_hint, generate_study_path, teach_pattern, regenerate_template, chat_about_pattern
+from app.usage import daily_limit_for, enforce_ai_quota, get_usage_today
 
 router = APIRouter()
 
@@ -20,11 +21,21 @@ def _require_openai_key() -> None:
         )
 
 
+@router.get("/usage")
+def usage(
+    db: Session = Depends(get_db),
+    user: User = Depends(current_user),
+):
+    limit = daily_limit_for(user)
+    used = get_usage_today(db, user.id)
+    return {"used": used, "limit": limit, "remaining": max(0, limit - used), "plan": user.plan}
+
+
 @router.post("/generate-path")
 async def generate_path(
     body: GeneratePathRequest,
     db: Session = Depends(get_db),
-    user: User = Depends(current_user),
+    user: User = Depends(enforce_ai_quota),
 ):
     _require_openai_key()
 
@@ -66,6 +77,7 @@ async def generate_path(
 async def get_hint(
     body: HintRequest,
     db: Session = Depends(get_db),
+    user: User = Depends(enforce_ai_quota),
 ):
     _require_openai_key()
 
@@ -90,6 +102,7 @@ async def get_hint(
 async def explain(
     body: ExplainRequest,
     db: Session = Depends(get_db),
+    user: User = Depends(enforce_ai_quota),
 ):
     _require_openai_key()
 
@@ -107,7 +120,10 @@ async def explain(
 
 
 @router.post("/teach-pattern")
-async def teach_pattern_endpoint(body: PatternTeachRequest):
+async def teach_pattern_endpoint(
+    body: PatternTeachRequest,
+    user: User = Depends(enforce_ai_quota),
+):
     _require_openai_key()
     result = await teach_pattern(
         pattern_name=body.pattern_name,
@@ -117,7 +133,10 @@ async def teach_pattern_endpoint(body: PatternTeachRequest):
 
 
 @router.post("/pattern-template")
-async def pattern_template_endpoint(body: PatternTemplateRequest):
+async def pattern_template_endpoint(
+    body: PatternTemplateRequest,
+    user: User = Depends(enforce_ai_quota),
+):
     _require_openai_key()
     result = await regenerate_template(
         pattern_name=body.pattern_name,
@@ -127,7 +146,10 @@ async def pattern_template_endpoint(body: PatternTemplateRequest):
 
 
 @router.post("/chat")
-async def chat_endpoint(body: PatternChatRequest):
+async def chat_endpoint(
+    body: PatternChatRequest,
+    user: User = Depends(enforce_ai_quota),
+):
     _require_openai_key()
     reply = await chat_about_pattern(
         pattern_name=body.pattern_name,

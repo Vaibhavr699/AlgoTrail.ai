@@ -1,5 +1,7 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 
+from app.auth import current_user
+from app.models import User
 from app.schemas import LeetCodeProblem, LeetCodeSearchItem, LeetCodeSearchResult, LeetCodeTag
 from app.services.leetcode import fetch_problem_detail, search_problems
 
@@ -40,7 +42,7 @@ def _normalize_search_item(raw: dict) -> dict:
 
 
 @router.get("/problems/{slug}", response_model=LeetCodeProblem)
-async def get_problem(slug: str):
+async def get_problem(slug: str, user: User = Depends(current_user)):
     raw = await fetch_problem_detail(slug)
     if raw is None:
         raise HTTPException(status_code=404, detail="Problem not found on LeetCode")
@@ -54,6 +56,7 @@ async def search(
     tags: str | None = Query(None, description="Comma-separated topic tag slugs"),
     limit: int = Query(20, ge=1, le=50),
     skip: int = Query(0, ge=0),
+    user: User = Depends(current_user),
 ):
     tag_list = [t.strip() for t in tags.split(",")] if tags else None
     raw = await search_problems(

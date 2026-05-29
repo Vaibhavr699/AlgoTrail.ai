@@ -3,6 +3,8 @@ import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
@@ -22,8 +24,7 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-        const res = await fetch(`${apiUrl}/api/auth/login`, {
+        const res = await fetch(`${API_URL}/api/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -35,11 +36,13 @@ export const authOptions: NextAuthOptions = {
         if (!res.ok) return null;
 
         const user = await res.json();
+        // `accessToken` is forwarded into the NextAuth JWT by the jwt callback.
         return {
           id: user.id,
           email: user.email,
           name: user.name,
           image: user.image,
+          accessToken: user.access_token as string,
         };
       },
     }),
@@ -51,29 +54,35 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    async signIn({ user, account }) {
-      if (account?.provider === "google" || account?.provider === "github") {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-        try {
-          await fetch(`${apiUrl}/api/auth/oauth`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              provider: account.provider,
-              email: user.email,
-              name: user.name,
-              image: user.image,
-            }),
-          });
-        } catch {
-          // Backend sync failed — still allow sign in, user will be synced later
+    async jwt({ token, user, account }) {
+      // Initial sign-in only (`user`/`account` are undefined on later calls).
+      if (account && user) {
+        if (account.provider === "credentials") {
+          token.id = user.id;
+          token.accessToken = (user as { accessToken?: string }).accessToken;
+        } else if (account.provider === "google" || account.provider === "github") {
+          // Sync the OAuth user into our backend and capture its signed token.
+          try {
+            const res = await fetch(`${API_URL}/api/auth/oauth`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                provider: account.provider,
+                email: user.email,
+                name: user.name,
+                image: user.image,
+              }),
+            });
+            if (res.ok) {
+              const data = await res.json();
+              token.id = data.id;
+              token.accessToken = data.access_token;
+            }
+          } catch {
+            // Backend sync failed — session still issues; API calls will 401
+            // until the next sign-in refreshes the token.
+          }
         }
-      }
-      return true;
-    },
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
       }
       return token;
     },
@@ -81,6 +90,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         (session.user as { id?: string }).id = token.id as string;
       }
+      (session as { accessToken?: string }).accessToken = token.accessToken as string | undefined;
       return session;
     },
   },

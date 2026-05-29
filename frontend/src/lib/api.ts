@@ -1,3 +1,4 @@
+import { getSession } from "next-auth/react";
 import type {
   AIExplanation,
   AIHint,
@@ -15,20 +16,22 @@ import type {
   TopicOut,
   TopicWithQuestions,
 } from "@/types";
+import type { BillingInfo } from "@/types";
+import { getAccessToken, setAccessToken } from "./auth-token";
 
 const BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
-function getAuthHeader(): Record<string, string> {
+// Bearer is the backend-issued JWT. The in-memory cache (kept warm by TokenSync)
+// is the fast path; on a cold start we resolve it once from the session.
+async function getAuthHeader(): Promise<Record<string, string>> {
   if (typeof window === "undefined") return {};
-  try {
-    const raw = localStorage.getItem("algotrail-auth");
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      const email = parsed?.state?.user?.email;
-      if (email) return { Authorization: `Bearer ${email}` };
-    }
-  } catch {}
-  return {};
+  let token = getAccessToken();
+  if (!token) {
+    const session = await getSession();
+    token = session?.accessToken ?? null;
+    setAccessToken(token);
+  }
+  return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
 async function http<T>(
@@ -40,7 +43,7 @@ async function http<T>(
     ...rest,
     headers: {
       "Content-Type": "application/json",
-      ...getAuthHeader(),
+      ...(await getAuthHeader()),
       ...(headers ?? {}),
     },
     body: json !== undefined ? JSON.stringify(json) : rest.body,
@@ -130,5 +133,10 @@ export const api = {
         method: "POST",
         json: { pattern_name: patternName, messages },
       }),
+  },
+  billing: {
+    me: () => http<BillingInfo>("/api/billing/me"),
+    checkout: () => http<{ url: string }>("/api/billing/checkout", { method: "POST" }),
+    portal: () => http<{ url: string }>("/api/billing/portal", { method: "POST" }),
   },
 };

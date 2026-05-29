@@ -1,10 +1,11 @@
-"""Auth dependency: resolves the current user.
+"""Auth dependency: resolves the current user from a signed JWT.
 
-- In development (no JWT_SECRET or ENVIRONMENT=development): falls back to
-  a demo user so the UI works without OAuth configured.
-- In production: expects an `Authorization: Bearer <email>` header that
-  matches a registered user. A full JWT validation will replace this once
-  NextAuth is deployed with a shared secret.
+- The frontend sends ``Authorization: Bearer <jwt>`` where the JWT was issued by
+  this backend at login/oauth and signed with ``JWT_SECRET``. The token's ``sub``
+  claim is the user id; we validate the signature + expiry and load that user.
+- In development only (``ENVIRONMENT=development``) and only when NO token is
+  supplied, we fall back to a demo user so the UI works without OAuth configured.
+  A present-but-invalid token is always rejected, even in development.
 """
 from fastapi import Depends, Header, HTTPException
 from sqlalchemy.orm import Session
@@ -12,6 +13,7 @@ from sqlalchemy.orm import Session
 from app.config import get_settings
 from app.database import get_db
 from app.models import User
+from app.security import decode_access_token
 
 DEMO_USER_EMAIL = "demo@trackmydsa.local"
 DEMO_USER_NAME = "Demo User"
@@ -34,12 +36,14 @@ def current_user(
     settings = get_settings()
 
     if authorization and authorization.startswith("Bearer "):
-        email = authorization[7:].strip()
-        if email:
-            user = db.query(User).filter(User.email == email).first()
+        token = authorization[7:].strip()
+        payload = decode_access_token(token)
+        user_id = payload.get("sub") if payload else None
+        if user_id:
+            user = db.query(User).filter(User.id == user_id).first()
             if user:
                 return user
-            raise HTTPException(status_code=401, detail="User not found.")
+        raise HTTPException(status_code=401, detail="Invalid or expired token.")
 
     if settings.environment == "development":
         return get_or_create_demo_user(db)

@@ -24,7 +24,8 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env             # one-time, no edits needed for local dev
-python -m app.seed               # creates tables + seeds topics & questions
+alembic upgrade head             # creates / migrates the database schema
+python -m app.seed               # seeds topics & questions
 uvicorn app.main:app --reload --port 8000
 ```
 
@@ -95,7 +96,7 @@ Track-My-DSA/
 
 ## What's stubbed for Phase 2
 
-- **Auth**: Phase 1 uses a single seeded `demo@trackmydsa.local` user (see [backend/app/auth.py](backend/app/auth.py)). Phase 2 wires NextAuth + a real JWT validator on the backend.
+- **Auth**: NextAuth (Google/GitHub/credentials) issues a session carrying a backend-signed JWT, which the API validates per request (see [backend/app/auth.py](backend/app/auth.py) + [backend/app/security.py](backend/app/security.py)). In local dev only, requests with **no** token fall back to a seeded `demo@trackmydsa.local` user for convenience.
 - **Question detail page** (notes editor with CodeMirror, timer): scaffolded routes but not built yet.
 - **Stats page** (charts, MAANG readiness panel): API already returns the data; the page UI is not built.
 - **Pattern Learning modals, ⌘K search, dark-mode toggle, spaced repetition**: pending Phase 2/3.

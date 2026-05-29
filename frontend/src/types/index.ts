@@ -191,3 +191,10 @@ export interface AIStudyPath {
   };
   advice: string;
 }
+
+export interface BillingInfo {
+  plan: "free" | "pro" | string;
+  status: string | null;
+  daily_limit: number;
+  billing_configured: boolean;
+}

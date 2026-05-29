@@ -1,9 +1,10 @@
 import enum
 import uuid
-from datetime import datetime
+from datetime import date, datetime
 
 from sqlalchemy import (
     ARRAY,
+    Date,
     DateTime,
     Enum as SAEnum,
     ForeignKey,
@@ -43,6 +44,7 @@ class User(Base):
     image: Mapped[str | None] = mapped_column(String, nullable=True)
     hashed_password: Mapped[str | None] = mapped_column(String, nullable=True)
     provider: Mapped[str | None] = mapped_column(String, nullable=True)
+    email_verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
@@ -52,6 +54,12 @@ class User(Base):
     last_solved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     longest_streak: Mapped[int] = mapped_column(Integer, default=0)
     xp: Mapped[int] = mapped_column(Integer, default=0)
+
+    # Billing / subscription
+    plan: Mapped[str] = mapped_column(String, default="free")
+    plan_status: Mapped[str | None] = mapped_column(String, nullable=True)
+    stripe_customer_id: Mapped[str | None] = mapped_column(String, nullable=True, index=True)
+    stripe_subscription_id: Mapped[str | None] = mapped_column(String, nullable=True)
 
     progress: Mapped[list["Progress"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     notes: Mapped[list["Note"]] = relationship(back_populates="user", cascade="all, delete-orphan")
@@ -144,3 +152,19 @@ class StudySession(Base):
     solved: Mapped[int] = mapped_column(Integer, default=0)
 
     user: Mapped["User"] = relationship(back_populates="sessions")
+
+
+class AiUsage(Base):
+    """Per-user, per-day count of AI requests.
+
+    Backs the daily quota (cost control / abuse prevention) and is the metering
+    foundation for plan-based limits once billing lands.
+    """
+
+    __tablename__ = "ai_usage"
+    __table_args__ = (UniqueConstraint("user_id", "day", name="uq_ai_usage_user_day"),)
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=_cuid)
+    user_id: Mapped[str] = mapped_column(String, ForeignKey("users.id"), index=True)
+    day: Mapped[date] = mapped_column(Date, index=True)
+    count: Mapped[int] = mapped_column(Integer, default=0)

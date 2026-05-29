@@ -119,7 +119,9 @@ algotrail/
 
 ---
 
-## API Endpoints (26 routes)
+## API Endpoints
+
+> All `/api/*` data routes require a `Bearer <jwt>` access token (issued at login/oauth). AI routes additionally enforce a per-plan daily quota.
 
 | Method | Path | Description |
 |---|---|---|
@@ -132,9 +134,14 @@ algotrail/
 | GET | `/api/notes/{slug}` | Get user's note |
 | POST | `/api/notes` | Create/update note |
 | GET | `/api/stats` | Aggregated stats + readiness |
-| POST | `/api/auth/register` | Create account |
-| POST | `/api/auth/login` | Credentials login |
-| POST | `/api/auth/oauth` | Sync OAuth user |
+| POST | `/api/auth/register` | Create account (sends verification email) |
+| POST | `/api/auth/login` | Credentials login → returns JWT |
+| POST | `/api/auth/oauth` | Sync OAuth user → returns JWT |
+| POST | `/api/auth/verify-email` | Confirm email from link token |
+| POST | `/api/auth/resend-verification` | Resend verification email |
+| POST | `/api/auth/forgot-password` | Request a password-reset link |
+| POST | `/api/auth/reset-password` | Set a new password from link token |
+| GET | `/api/ai/usage` | Today's AI usage + plan limit |
 | POST | `/api/ai/generate-path` | AI study path generator |
 | POST | `/api/ai/hint` | Progressive hints (1-3) |
 | POST | `/api/ai/explain` | Full solution explanation |
@@ -143,6 +150,10 @@ algotrail/
 | POST | `/api/ai/chat` | Chatbot (Aria) |
 | GET | `/api/leetcode/problems/{slug}` | LeetCode problem details |
 | GET | `/api/leetcode/search` | Search LeetCode problems |
+| GET | `/api/billing/me` | Current plan, status, daily limit |
+| POST | `/api/billing/checkout` | Start Stripe Pro checkout |
+| POST | `/api/billing/portal` | Open Stripe customer portal |
+| POST | `/api/billing/webhook` | Stripe subscription webhooks |
 
 ---
 
@@ -165,6 +176,7 @@ cd backend
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env          # Fill in DATABASE_URL + OPENAI_API_KEY
+alembic upgrade head           # Create / migrate the database schema
 python -m app.seed             # Seeds 17 topics, 145 questions
 uvicorn app.main:app --reload --port 8000
 
