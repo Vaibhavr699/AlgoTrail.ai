@@ -6,7 +6,7 @@ from sqlalchemy import text
 from app.config import get_settings
 from app.database import SessionLocal
 from app.observability import RequestLoggingMiddleware, init_sentry, logger, setup_logging
-from app.routers import ai, auth_routes, billing, daily_challenge, leetcode, notes, progress, questions, stats, topics
+from app.routers import account, ai, auth_routes, billing, daily_challenge, leetcode, notes, progress, questions, stats, topics
 
 settings = get_settings()
 
@@ -62,3 +62,4 @@ app.include_router(ai.router, prefix="/api/ai", tags=["ai"])
 app.include_router(leetcode.router, prefix="/api/leetcode", tags=["leetcode"])
 app.include_router(daily_challenge.router, prefix="/api/daily-challenge", tags=["daily-challenge"])
 app.include_router(billing.router, prefix="/api/billing", tags=["billing"])
+app.include_router(account.router, prefix="/api/account", tags=["account"])

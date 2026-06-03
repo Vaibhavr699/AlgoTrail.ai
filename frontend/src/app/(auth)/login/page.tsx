@@ -200,7 +200,7 @@ export default function LoginPage() {
 }
 
 const INPUT_CLASS =
-  "block w-full rounded-lg border border-forest-900/12 bg-white px-3.5 py-2.5 text-sm placeholder:text-forest-ink/35 focus:border-forest-500 focus:outline-none focus:ring-2 focus:ring-forest-500/20 transition disabled:opacity-50";
+  "block w-full rounded-lg border border-forest-900/12 bg-white px-3.5 py-2.5 text-sm text-forest-ink placeholder:text-forest-ink/35 focus:border-forest-500 focus:outline-none focus:ring-2 focus:ring-forest-500/20 transition disabled:opacity-50";
 
 function Field({
   id,

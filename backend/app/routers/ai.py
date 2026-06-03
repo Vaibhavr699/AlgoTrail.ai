@@ -5,9 +5,10 @@ from app.auth import current_user
 from app.config import get_settings
 from app.database import get_db
 from app.models import Question, Topic, User
-from app.schemas import ExplainRequest, GeneratePathRequest, HintRequest, PatternTeachRequest, PatternTemplateRequest, PatternChatRequest
-from app.services.openai_service import explain_solution, generate_hint, generate_study_path, teach_pattern, regenerate_template, chat_about_pattern
-from app.usage import daily_limit_for, enforce_ai_quota, get_usage_today
+from app.schemas import ExplainProblemRequest, ExplainRequest, GeneratePathRequest, HintRequest, PatternTeachRequest, PatternTemplateRequest, PatternChatRequest
+from app.services.leetcode import extract_slug, fetch_problem_detail
+from app.services.openai_service import chat_about_pattern, explain_problem_visual, explain_solution, generate_hint, generate_study_path, regenerate_template, teach_pattern
+from app.usage import consume_quota, daily_limit_for, enforce_ai_quota, get_usage_today
 
 router = APIRouter()
 
@@ -143,6 +144,49 @@ async def pattern_template_endpoint(
         language=body.language,
     )
     return result
+
+
+@router.post("/explain-problem")
+async def explain_problem(
+    body: ExplainProblemRequest,
+    db: Session = Depends(get_db),
+    user: User = Depends(current_user),
+):
+    _require_openai_key()
+
+    slug = extract_slug(body.url)
+    if not slug:
+        raise HTTPException(
+            status_code=400,
+            detail="Couldn't find a LeetCode problem in that link. Paste a URL like https://leetcode.com/problems/two-sum/",
+        )
+
+    raw = await fetch_problem_detail(slug)
+    if raw is None:
+        raise HTTPException(status_code=404, detail="Couldn't find that problem on LeetCode.")
+    if raw.get("isPaidOnly"):
+        raise HTTPException(
+            status_code=403,
+            detail="That's a LeetCode Premium problem, so its statement isn't publicly available.",
+        )
+
+    # Only charge quota once we know we have a real, free problem to explain.
+    consume_quota(db, user)
+
+    tags = [t["name"] for t in (raw.get("topicTags") or [])]
+    explanation = await explain_problem_visual(
+        title=raw.get("title", ""),
+        difficulty=raw.get("difficulty", ""),
+        content=raw.get("content") or "",
+        tags=tags,
+    )
+    return {
+        "slug": slug,
+        "title": raw.get("title"),
+        "difficulty": raw.get("difficulty"),
+        "url": f"https://leetcode.com/problems/{slug}/",
+        "explanation": explanation,
+    }
 
 
 @router.post("/chat")

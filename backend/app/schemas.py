@@ -155,6 +155,10 @@ class PatternTeachRequest(BaseModel):
     topic_context: str | None = None
 
 
+class ExplainProblemRequest(BaseModel):
+    url: str  # a LeetCode problem URL or bare slug
+
+
 class PatternTemplateRequest(BaseModel):
     pattern_name: str
     language: str = "python"

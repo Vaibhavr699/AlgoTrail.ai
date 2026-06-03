@@ -40,10 +40,13 @@ def get_usage_today(db: Session, user_id: str) -> int:
     return row.count if row else 0
 
 
-def enforce_ai_quota(
-    db: Session = Depends(get_db),
-    user: User = Depends(current_user),
-) -> User:
+def consume_quota(db: Session, user: User) -> None:
+    """Count one AI request against the user's daily allowance, or raise 429.
+
+    Use this imperatively when you want to validate cheap preconditions (e.g. a
+    pasted URL) BEFORE charging quota; use ``enforce_ai_quota`` as a dependency
+    for the common case.
+    """
     limit = daily_limit_for(user)
     today = _today()
 
@@ -64,4 +67,11 @@ def enforce_ai_quota(
     else:
         row.count += 1
     db.commit()
+
+
+def enforce_ai_quota(
+    db: Session = Depends(get_db),
+    user: User = Depends(current_user),
+) -> User:
+    consume_quota(db, user)
     return user

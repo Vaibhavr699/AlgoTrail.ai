@@ -230,6 +230,57 @@ Return JSON with exactly:
     return json.loads(response.choices[0].message.content)
 
 
+async def explain_problem_visual(
+    title: str,
+    difficulty: str,
+    content: str,
+    tags: list[str],
+) -> dict:
+    tag_line = ", ".join(tags) if tags else "unknown"
+    trimmed = (content or "")[:4000]
+
+    prompt = f"""You are Aria, a friendly DSA tutor. A student pasted a LeetCode problem they don't understand. Explain it so a beginner truly gets it, and produce a STEP-BY-STEP visual trace of the OPTIMAL algorithm running on the problem's first example.
+
+PROBLEM: {title}
+DIFFICULTY: {difficulty}
+TOPIC TAGS: {tag_line}
+STATEMENT (HTML, usually includes worked examples):
+{trimmed}
+
+Return JSON with EXACTLY this shape:
+{{
+  "tldr": "One plain sentence: what is this problem really asking?",
+  "intuition": "2-4 sentences of plain-English intuition for the optimal approach.",
+  "pattern": "The main technique, e.g. 'Hash Map' or 'Two Pointers'.",
+  "example_input": "The concrete example input you trace (from the statement if present, else a small one you pick).",
+  "steps": [
+    {{
+      "title": "Short step label",
+      "explanation": "What happens this step and WHY, in plain English.",
+      "state": "A compact MONOSPACE snapshot of the data-structure state AFTER this step. Align arrays in columns, mark pointers with ^, show map/stack/queue contents. <= 8 lines, <= 56 chars per line."
+    }}
+  ],
+  "time_complexity": "O(...) — short reason",
+  "space_complexity": "O(...) — short reason",
+  "edge_cases": ["edge case 1", "edge case 2"]
+}}
+
+Rules:
+- 4 to 8 steps, tracing the OPTIMAL solution (not brute force) on example_input.
+- "state" is rendered in a monospace box — make it visually clear and aligned.
+- Teach UNDERSTANDING; do NOT dump the full solution code."""
+
+    client = _get_client()
+    response = await client.chat.completions.create(
+        model=_model(),
+        messages=[{"role": "user", "content": prompt}],
+        response_format={"type": "json_object"},
+        temperature=0.3,
+    )
+    import json
+    return json.loads(response.choices[0].message.content)
+
+
 async def chat_about_pattern(
     pattern_name: str,
     conversation: list[dict],

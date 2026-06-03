@@ -47,3 +47,35 @@ services:
         sync: false
       - key: AI_PRO_DAILY_LIMIT
         value: "500"
+
+  # Weekly progress digest — Mondays 14:00 UTC.
+  - type: cron
+    name: algotrail-weekly-digest
+    runtime: python
+    region: oregon
+    rootDir: backend
+    schedule: "0 14 * * 1"
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m app.digest
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: ENVIRONMENT
+        value: production
+      # Required by the prod config validator (unused by the digest itself).
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_ORIGIN
+        sync: false
+      - key: APP_BASE_URL
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: SMTP_FROM
+        sync: false

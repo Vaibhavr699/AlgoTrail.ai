@@ -39,7 +39,7 @@ export default function SettingsPage() {
   return (
     <>
       <TopNav title="Settings" />
-      <div className="flex-1 p-4 sm:p-6 max-w-3xl w-full mx-auto space-y-5">
+      <div className="flex-1 p-4 sm:p-6 max-w-5xl w-full mx-auto space-y-5">
         {/* Profile */}
         <Card>
           <CardHeader>
@@ -119,11 +119,7 @@ export default function SettingsPage() {
               desc="Get reminded to solve a problem daily"
               defaultChecked
             />
-            <ToggleRow
-              label="Weekly progress summary"
-              desc="Summary of problems solved and topics covered"
-              defaultChecked
-            />
+            <WeeklyDigestRow />
             <ToggleRow
               label="New feature announcements"
               desc="Be notified when we ship something new"
@@ -224,6 +220,56 @@ export default function SettingsPage() {
         </p>
       </div>
     </>
+  );
+}
+
+function WeeklyDigestRow() {
+  const qc = useQueryClient();
+  const { data } = useQuery({ queryKey: ["notif-prefs"], queryFn: api.account.notifications });
+  const enabled = data?.weekly_digest ?? true;
+  const [previewMsg, setPreviewMsg] = useState<string | null>(null);
+
+  const toggle = useMutation({
+    mutationFn: (next: boolean) => api.account.setWeeklyDigest(next),
+    onSuccess: (res) => qc.setQueryData(["notif-prefs"], res),
+  });
+  const preview = useMutation({
+    mutationFn: api.account.sendDigestPreview,
+    onSuccess: (res) => setPreviewMsg(`Sent a preview to ${res.sent_to}.`),
+    onError: () => setPreviewMsg("Couldn't send the preview. Try again."),
+  });
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between gap-4">
+        <div className="min-w-0">
+          <p className="text-sm font-medium">Weekly progress summary</p>
+          <p className="text-xs text-[rgb(var(--muted))]">
+            A Monday email with what you solved, your streak, and what&apos;s due for review
+          </p>
+        </div>
+        <input
+          type="checkbox"
+          checked={enabled}
+          onChange={(e) => toggle.mutate(e.target.checked)}
+          disabled={toggle.isPending}
+          className="h-4 w-4 rounded border-[rgb(var(--border))] text-brand-500 focus:ring-brand-500/30 shrink-0"
+        />
+      </div>
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => {
+            setPreviewMsg(null);
+            preview.mutate();
+          }}
+          disabled={preview.isPending}
+          className="text-xs font-medium text-brand-600 hover:text-brand-700 disabled:opacity-60"
+        >
+          {preview.isPending ? "Sending…" : "Send me a preview"}
+        </button>
+        {previewMsg && <span className="text-xs text-[rgb(var(--muted))]">{previewMsg}</span>}
+      </div>
+    </div>
   );
 }
 

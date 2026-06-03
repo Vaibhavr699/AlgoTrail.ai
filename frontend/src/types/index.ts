@@ -198,3 +198,28 @@ export interface BillingInfo {
   daily_limit: number;
   billing_configured: boolean;
 }
+
+export interface VisualExplanationStep {
+  title: string;
+  explanation: string;
+  state: string;
+}
+
+export interface VisualExplanation {
+  tldr: string;
+  intuition: string;
+  pattern: string;
+  example_input: string;
+  steps: VisualExplanationStep[];
+  time_complexity: string;
+  space_complexity: string;
+  edge_cases: string[];
+}
+
+export interface ExplainProblemResult {
+  slug: string;
+  title: string;
+  difficulty: string;
+  url: string;
+  explanation: VisualExplanation;
+}

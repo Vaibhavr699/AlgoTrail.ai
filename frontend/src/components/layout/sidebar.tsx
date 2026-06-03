@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { Home, Map, BarChart3, Settings, Flame, LogOut, Shapes, CalendarDays } from "lucide-react";
+import { Home, Map, BarChart3, Settings, Flame, LogOut, Shapes, CalendarDays, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUIStore } from "@/stores/ui.store";
 
@@ -12,6 +12,7 @@ const NAV = [
   { href: "/dashboard", label: "Dashboard", icon: Home },
   { href: "/roadmap", label: "Roadmap", icon: Map },
   { href: "/patterns", label: "Patterns", icon: Shapes },
+  { href: "/explain", label: "Explain", icon: Lightbulb },
   { href: "/study-plan", label: "Study Plan", icon: CalendarDays },
   { href: "/stats", label: "Stats", icon: BarChart3 },
   { href: "/settings", label: "Settings", icon: Settings },

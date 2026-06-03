@@ -154,6 +154,9 @@ algotrail/
 | POST | `/api/billing/checkout` | Start Stripe Pro checkout |
 | POST | `/api/billing/portal` | Open Stripe customer portal |
 | POST | `/api/billing/webhook` | Stripe subscription webhooks |
+| GET | `/api/account/notifications` | Notification preferences |
+| PATCH | `/api/account/notifications` | Update notification preferences |
+| POST | `/api/account/digest-preview` | Email yourself a digest preview |
 
 ---
 

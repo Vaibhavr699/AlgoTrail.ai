@@ -1,6 +1,28 @@
+import re
+
 import httpx
 
 LEETCODE_GRAPHQL_URL = "https://leetcode.com/graphql"
+
+_SLUG_IN_URL = re.compile(r"/problems/([^/?#\s]+)")
+_BARE_SLUG = re.compile(r"[a-z0-9][a-z0-9-]*")
+
+
+def extract_slug(url_or_slug: str) -> str | None:
+    """Pull the problem slug from a LeetCode URL, or accept a bare slug.
+
+    Handles ``https://leetcode.com/problems/two-sum/``, ``.../two-sum/description/``,
+    trailing query/hash, and a plain ``two-sum``. Returns ``None`` if nothing usable.
+    """
+    s = (url_or_slug or "").strip()
+    if not s:
+        return None
+    m = _SLUG_IN_URL.search(s)
+    if m:
+        return m.group(1)
+    if _BARE_SLUG.fullmatch(s):
+        return s
+    return None
 
 PROBLEM_DETAIL_QUERY = """
 query getQuestionDetail($titleSlug: String!) {

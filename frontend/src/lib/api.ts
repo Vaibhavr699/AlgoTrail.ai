@@ -16,7 +16,7 @@ import type {
   TopicOut,
   TopicWithQuestions,
 } from "@/types";
-import type { BillingInfo } from "@/types";
+import type { BillingInfo, ExplainProblemResult } from "@/types";
 import { getAccessToken, setAccessToken } from "./auth-token";
 
 const BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -133,10 +133,27 @@ export const api = {
         method: "POST",
         json: { pattern_name: patternName, messages },
       }),
+    explainProblem: (url: string) =>
+      http<ExplainProblemResult>("/api/ai/explain-problem", {
+        method: "POST",
+        json: { url },
+      }),
   },
   billing: {
     me: () => http<BillingInfo>("/api/billing/me"),
     checkout: () => http<{ url: string }>("/api/billing/checkout", { method: "POST" }),
     portal: () => http<{ url: string }>("/api/billing/portal", { method: "POST" }),
+  },
+  account: {
+    notifications: () => http<{ weekly_digest: boolean }>("/api/account/notifications"),
+    setWeeklyDigest: (weekly_digest: boolean) =>
+      http<{ weekly_digest: boolean }>("/api/account/notifications", {
+        method: "PATCH",
+        json: { weekly_digest },
+      }),
+    sendDigestPreview: () =>
+      http<{ sent_to: string; digest: Record<string, number> }>("/api/account/digest-preview", {
+        method: "POST",
+      }),
   },
 };
