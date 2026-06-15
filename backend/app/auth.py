@@ -49,3 +49,20 @@ def current_user(
         return get_or_create_demo_user(db)
 
     raise HTTPException(status_code=401, detail="Not authenticated.")
+
+
+def optional_user(
+    db: Session = Depends(get_db),
+    authorization: str | None = Header(None),
+) -> User | None:
+    """Like current_user, but returns None instead of raising when there is no
+    valid token. For endpoints that are public but personalize when signed in."""
+    if authorization and authorization.startswith("Bearer "):
+        token = authorization[7:].strip()
+        payload = decode_access_token(token)
+        user_id = payload.get("sub") if payload else None
+        if user_id:
+            return db.query(User).filter(User.id == user_id).first()
+    if get_settings().environment == "development":
+        return get_or_create_demo_user(db)
+    return None

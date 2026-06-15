@@ -7,6 +7,10 @@ import { useInterviewCategories } from "@/hooks/use-interview";
 
 export default function InterviewPrepPage() {
   const categories = useInterviewCategories();
+  const data = categories.data ?? [];
+
+  const totalQuestions = data.reduce((s, c) => s + c.question_count, 0);
+  const totalReviewed = data.reduce((s, c) => s + c.reviewed_count, 0);
 
   return (
     <>
@@ -21,6 +25,20 @@ export default function InterviewPrepPage() {
             In-depth interview questions across languages and frameworks, with explanations,
             real code examples, gotchas, and follow-ups.
           </p>
+          {!categories.isLoading && !categories.isError && data.length > 0 && (
+            <p className="mt-2 text-xs text-[rgb(var(--muted))]">
+              <span className="font-medium text-[rgb(var(--foreground))]">{totalQuestions}</span>{" "}
+              questions across{" "}
+              <span className="font-medium text-[rgb(var(--foreground))]">{data.length}</span>{" "}
+              categories
+              {totalReviewed > 0 && (
+                <>
+                  {" · "}
+                  <span className="font-medium text-brand-600">{totalReviewed} reviewed</span>
+                </>
+              )}
+            </p>
+          )}
         </div>
 
         {categories.isLoading ? (
@@ -28,7 +46,7 @@ export default function InterviewPrepPage() {
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="h-28 rounded-lg border border-[rgb(var(--border))] bg-gray-50 dark:bg-gray-800/40 animate-pulse"
+                className="h-36 rounded-lg border border-[rgb(var(--border))] bg-gray-50 dark:bg-gray-800/40 animate-pulse"
               />
             ))}
           </div>
@@ -42,12 +60,12 @@ export default function InterviewPrepPage() {
               Retry
             </button>
           </div>
-        ) : (categories.data ?? []).length === 0 ? (
+        ) : data.length === 0 ? (
           <p className="text-sm text-[rgb(var(--muted))]">No categories yet.</p>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {(categories.data ?? []).map((c) => (
-              <CategoryCard key={c.id} category={c} reviewedCount={0} />
+            {data.map((c) => (
+              <CategoryCard key={c.id} category={c} reviewedCount={c.reviewed_count} />
             ))}
           </div>
         )}
