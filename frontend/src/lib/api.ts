@@ -5,6 +5,9 @@ import type {
   AIStudyPath,
   ChatMessage,
   DailyChallengeOut,
+  InterviewCategoryOut,
+  InterviewCategoryWithQuestions,
+  InterviewProgressOut,
   LeetCodeProblem,
   LeetCodeSearchResult,
   NoteOut,
@@ -143,6 +146,17 @@ export const api = {
     me: () => http<BillingInfo>("/api/billing/me"),
     checkout: () => http<{ url: string }>("/api/billing/checkout", { method: "POST" }),
     portal: () => http<{ url: string }>("/api/billing/portal", { method: "POST" }),
+  },
+  interview: {
+    categories: () => http<InterviewCategoryOut[]>("/api/interview/categories"),
+    category: (slug: string) =>
+      http<InterviewCategoryWithQuestions>(`/api/interview/categories/${slug}`),
+    progress: () => http<InterviewProgressOut[]>("/api/interview/progress"),
+    setProgress: (questionId: string, patch: { reviewed?: boolean; bookmarked?: boolean }) =>
+      http<InterviewProgressOut>(`/api/interview/progress/${questionId}`, {
+        method: "POST",
+        json: patch,
+      }),
   },
   account: {
     notifications: () => http<{ weekly_digest: boolean }>("/api/account/notifications"),

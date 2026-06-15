@@ -223,3 +223,45 @@ export interface ExplainProblemResult {
   url: string;
   explanation: VisualExplanation;
 }
+
+export interface CodeExample {
+  language: string;
+  code: string;
+  label?: string | null;
+}
+
+export interface InterviewQuestionOut {
+  id: string;
+  slug: string;
+  question: string;
+  difficulty: Difficulty;
+  tldr: string;
+  explanation: string;
+  code_examples: CodeExample[];
+  tags: string[];
+  gotchas: string[];
+  follow_ups: string[];
+  order: number;
+}
+
+export interface InterviewCategoryOut {
+  id: string;
+  slug: string;
+  title: string;
+  icon: string;
+  order: number;
+  description: string;
+  color: string;
+  language: string;
+  question_count: number;
+}
+
+export interface InterviewCategoryWithQuestions extends InterviewCategoryOut {
+  questions: InterviewQuestionOut[];
+}
+
+export interface InterviewProgressOut {
+  interview_question_id: string;
+  reviewed: boolean;
+  bookmarked: boolean;
+}
