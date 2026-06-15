@@ -27,24 +27,29 @@ def list_categories(
     )
 
     reviewed_ids: set[str] = set()
+    bookmarked_ids: set[str] = set()
     if user is not None:
-        reviewed_ids = {
-            pid
-            for (pid,) in db.query(InterviewProgress.interview_question_id)
-            .filter(
-                InterviewProgress.user_id == user.id,
-                InterviewProgress.reviewed.is_(True),
+        rows = (
+            db.query(
+                InterviewProgress.interview_question_id,
+                InterviewProgress.reviewed,
+                InterviewProgress.bookmarked,
             )
+            .filter(InterviewProgress.user_id == user.id)
             .all()
-        }
+        )
+        for qid, reviewed, bookmarked in rows:
+            if reviewed:
+                reviewed_ids.add(qid)
+            if bookmarked:
+                bookmarked_ids.add(qid)
 
     out = []
     for c in cats:
         item = InterviewCategoryOut.model_validate(c)
         item.question_count = len(c.questions)
-        item.reviewed_count = (
-            sum(1 for q in c.questions if q.id in reviewed_ids) if reviewed_ids else 0
-        )
+        item.reviewed_count = sum(1 for q in c.questions if q.id in reviewed_ids)
+        item.bookmarked_count = sum(1 for q in c.questions if q.id in bookmarked_ids)
         out.append(item)
     return out
 

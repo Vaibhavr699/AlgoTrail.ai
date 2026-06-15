@@ -11,9 +11,6 @@ export function InterviewFilters({
   onQuery,
   difficulty,
   onDifficulty,
-  tags,
-  activeTag,
-  onTag,
   bookmarkedOnly,
   onBookmarkedOnly,
   resultCount,
@@ -24,17 +21,13 @@ export function InterviewFilters({
   onQuery: (v: string) => void;
   difficulty: Difficulty | "ALL";
   onDifficulty: (v: Difficulty | "ALL") => void;
-  tags: string[];
-  activeTag: string | null;
-  onTag: (v: string | null) => void;
   bookmarkedOnly: boolean;
   onBookmarkedOnly: (v: boolean) => void;
   resultCount: number;
   totalCount: number;
   onClearAll: () => void;
 }) {
-  const hasActiveFilters =
-    !!query || difficulty !== "ALL" || !!activeTag || bookmarkedOnly;
+  const hasActiveFilters = !!query || difficulty !== "ALL" || bookmarkedOnly;
 
   return (
     <div className="sticky top-14 z-[5] -mx-4 border-b border-[rgb(var(--border))] bg-[rgb(var(--background))]/85 px-4 py-3 backdrop-blur-md space-y-3">
@@ -79,26 +72,6 @@ export function InterviewFilters({
           Saved
         </button>
       </div>
-
-      {tags.length > 0 && (
-        <div className="flex flex-wrap gap-1.5">
-          {tags.map((t) => (
-            <button
-              key={t}
-              onClick={() => onTag(activeTag === t ? null : t)}
-              className={cn(
-                "rounded-full border px-2.5 py-0.5 text-xs transition-colors",
-                activeTag === t
-                  ? "border-brand-500 bg-brand-500 text-white"
-                  : "border-[rgb(var(--border))] text-[rgb(var(--muted))] hover:border-brand-300"
-              )}
-            >
-              #{t}
-            </button>
-          ))}
-        </div>
-      )}
-
       <div className="flex items-center justify-between text-xs text-[rgb(var(--muted))]">
         <span>
           <span className="font-medium text-[rgb(var(--foreground))]">{resultCount}</span> of{" "}

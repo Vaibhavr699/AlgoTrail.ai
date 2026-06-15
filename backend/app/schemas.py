@@ -226,6 +226,7 @@ class InterviewCategoryOut(BaseModel):
     language: str
     question_count: int = 0
     reviewed_count: int = 0
+    bookmarked_count: int = 0
 
 
 class InterviewCategoryWithQuestions(InterviewCategoryOut):

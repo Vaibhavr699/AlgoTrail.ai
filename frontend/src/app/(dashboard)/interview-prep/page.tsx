@@ -1,16 +1,16 @@
 "use client";
 
 import { MessageSquareCode } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { TopNav } from "@/components/layout/top-nav";
 import { CategoryCard } from "@/components/interview/category-card";
+import { ProgressDashboard } from "@/components/interview/progress-dashboard";
 import { useInterviewCategories } from "@/hooks/use-interview";
 
 export default function InterviewPrepPage() {
   const categories = useInterviewCategories();
+  const { data: session } = useSession();
   const data = categories.data ?? [];
-
-  const totalQuestions = data.reduce((s, c) => s + c.question_count, 0);
-  const totalReviewed = data.reduce((s, c) => s + c.reviewed_count, 0);
 
   return (
     <>
@@ -25,21 +25,11 @@ export default function InterviewPrepPage() {
             In-depth interview questions across languages and frameworks, with explanations,
             real code examples, gotchas, and follow-ups.
           </p>
-          {!categories.isLoading && !categories.isError && data.length > 0 && (
-            <p className="mt-2 text-xs text-[rgb(var(--muted))]">
-              <span className="font-medium text-[rgb(var(--foreground))]">{totalQuestions}</span>{" "}
-              questions across{" "}
-              <span className="font-medium text-[rgb(var(--foreground))]">{data.length}</span>{" "}
-              categories
-              {totalReviewed > 0 && (
-                <>
-                  {" · "}
-                  <span className="font-medium text-brand-600">{totalReviewed} reviewed</span>
-                </>
-              )}
-            </p>
-          )}
         </div>
+
+        {!categories.isLoading && !categories.isError && data.length > 0 && (
+          <ProgressDashboard categories={data} signedIn={!!session} />
+        )}
 
         {categories.isLoading ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

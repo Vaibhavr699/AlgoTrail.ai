@@ -86,13 +86,6 @@ export function QuestionCard({
               <Bookmark className="h-3.5 w-3.5 shrink-0 fill-brand-500 text-brand-500" aria-label="Bookmarked" />
             )}
           </div>
-          {q.tags.length > 0 && (
-            <div className="mt-1.5 flex flex-wrap gap-1">
-              {q.tags.map((t) => (
-                <span key={t} className="text-[11px] text-[rgb(var(--muted))]">#{t}</span>
-              ))}
-            </div>
-          )}
         </div>
 
         <ChevronDown

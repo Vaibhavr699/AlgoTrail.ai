@@ -255,6 +255,7 @@ export interface InterviewCategoryOut {
   language: string;
   question_count: number;
   reviewed_count: number;
+  bookmarked_count: number;
 }
 
 export interface InterviewCategoryWithQuestions extends InterviewCategoryOut {

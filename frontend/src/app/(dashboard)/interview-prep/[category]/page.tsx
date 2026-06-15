@@ -35,7 +35,6 @@ export default function InterviewCategoryPage({
   const [difficulty, setDifficulty] = useState<Difficulty | "ALL">(
     (searchParams.get("d") as Difficulty | "ALL") || "ALL"
   );
-  const [activeTag, setActiveTag] = useState<string | null>(searchParams.get("tag"));
   const [bookmarkedOnly, setBookmarkedOnly] = useState(searchParams.get("saved") === "1");
 
   // Reflect filter state into the URL (replace, so back still returns to the hub).
@@ -43,17 +42,12 @@ export default function InterviewCategoryPage({
     const sp = new URLSearchParams();
     if (query) sp.set("q", query);
     if (difficulty !== "ALL") sp.set("d", difficulty);
-    if (activeTag) sp.set("tag", activeTag);
     if (bookmarkedOnly) sp.set("saved", "1");
     const qs = sp.toString();
     router.replace(`/interview-prep/${category}${qs ? `?${qs}` : ""}`, { scroll: false });
-  }, [query, difficulty, activeTag, bookmarkedOnly, category, router]);
+  }, [query, difficulty, bookmarkedOnly, category, router]);
 
   const questions = useMemo(() => cat.data?.questions ?? [], [cat.data]);
-  const allTags = useMemo(
-    () => Array.from(new Set(questions.flatMap((q) => q.tags))).sort(),
-    [questions]
-  );
 
   const progressById = useMemo(
     () => new Map((progress.data ?? []).map((p) => [p.interview_question_id, p])),
@@ -73,7 +67,6 @@ export default function InterviewCategoryPage({
 
   const filtered = questions.filter((q) => {
     if (difficulty !== "ALL" && q.difficulty !== difficulty) return false;
-    if (activeTag && !q.tags.includes(activeTag)) return false;
     if (bookmarkedOnly && !progressById.get(q.id)?.bookmarked) return false;
     if (query && !q.question.toLowerCase().includes(query.toLowerCase())) return false;
     return true;
@@ -82,7 +75,6 @@ export default function InterviewCategoryPage({
   function clearAll() {
     setQuery("");
     setDifficulty("ALL");
-    setActiveTag(null);
     setBookmarkedOnly(false);
   }
 
@@ -173,9 +165,6 @@ export default function InterviewCategoryPage({
               onQuery={setQuery}
               difficulty={difficulty}
               onDifficulty={setDifficulty}
-              tags={allTags}
-              activeTag={activeTag}
-              onTag={setActiveTag}
               bookmarkedOnly={bookmarkedOnly}
               onBookmarkedOnly={setBookmarkedOnly}
               resultCount={filtered.length}
