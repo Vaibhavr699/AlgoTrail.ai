@@ -11,11 +11,19 @@ from typing import Sequence, Union
 import sqlalchemy as sa
 from alembic import op
 from sqlalchemy import inspect
+from sqlalchemy.dialects import postgresql
 
 revision: str = "0005_interview_prep"
 down_revision: Union[str, None] = "0004_email_weekly_digest"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
+
+# The `difficulty` enum type is owned by migration 0001 (for the questions
+# table). Reference it here with create_type=False so create_table never tries
+# to re-issue CREATE TYPE — that would fail on any DB where 0001 already ran.
+difficulty_enum = postgresql.ENUM(
+    "EASY", "MEDIUM", "HARD", name="difficulty", create_type=False
+)
 
 
 def _has_table(table: str) -> bool:
@@ -51,11 +59,7 @@ def upgrade() -> None:
             ),
             sa.Column("slug", sa.String(), nullable=False),
             sa.Column("question", sa.String(), nullable=False),
-            sa.Column(
-                "difficulty",
-                sa.Enum("EASY", "MEDIUM", "HARD", name="difficulty", create_type=False),
-                nullable=False,
-            ),
+            sa.Column("difficulty", difficulty_enum, nullable=False),
             sa.Column("tldr", sa.String(), nullable=False),
             sa.Column("explanation", sa.String(), nullable=False),
             sa.Column("code_examples", sa.JSON(), nullable=False, server_default="[]"),
