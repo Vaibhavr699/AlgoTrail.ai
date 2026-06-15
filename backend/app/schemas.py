@@ -189,3 +189,56 @@ class DailyChallengeOut(BaseModel):
     topic_icon: str
     topic_color: str
     date: str
+
+
+class CodeExample(BaseModel):
+    language: str
+    code: str
+    label: str | None = None
+
+
+class InterviewQuestionOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    slug: str
+    question: str
+    difficulty: Difficulty
+    tldr: str
+    explanation: str
+    code_examples: list[CodeExample] = []
+    tags: list[str] = []
+    gotchas: list[str] = []
+    follow_ups: list[str] = []
+    order: int
+
+
+class InterviewCategoryOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    slug: str
+    title: str
+    icon: str
+    order: int
+    description: str
+    color: str
+    language: str
+    question_count: int = 0
+
+
+class InterviewCategoryWithQuestions(InterviewCategoryOut):
+    questions: list[InterviewQuestionOut] = []
+
+
+class InterviewProgressOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    interview_question_id: str
+    reviewed: bool
+    bookmarked: bool
+
+
+class InterviewProgressUpdate(BaseModel):
+    reviewed: bool | None = None
+    bookmarked: bool | None = None
