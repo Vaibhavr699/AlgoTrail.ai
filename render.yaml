@@ -6,9 +6,11 @@ services:
     rootDir: backend
     buildCommand: pip install -r requirements.txt
     # Run schema migrations and (idempotent) reference-data seeding before the
-    # new version goes live, instead of on every app boot.
+    # new version goes live. preDeployCommand is only honored on some Render
+    # plans, so the startCommand also runs them as a belt-and-suspenders guard —
+    # both alembic upgrade and the seed are idempotent, so running twice is safe.
     preDeployCommand: alembic upgrade head && python -m app.seed
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    startCommand: alembic upgrade head && python -m app.seed && uvicorn app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
     envVars:
       - key: DATABASE_URL
