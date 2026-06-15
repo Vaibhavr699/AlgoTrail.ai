@@ -9,6 +9,7 @@ import { TopNav } from "@/components/layout/top-nav";
 import { Progress } from "@/components/ui/progress";
 import { QuestionCard } from "@/components/interview/question-card";
 import { InterviewFilters } from "@/components/interview/interview-filters";
+import { CategoryIcon, categoryBrandColor } from "@/components/interview/category-icon";
 import {
   useInterviewCategory,
   useInterviewProgress,
@@ -96,7 +97,7 @@ export default function InterviewCategoryPage({
   return (
     <>
       <TopNav title={cat.data?.title ?? "Interview Prep"} />
-      <div className="flex-1 p-6 max-w-3xl w-full mx-auto space-y-5">
+      <div className="flex-1 p-6 max-w-5xl w-full mx-auto space-y-5">
         {/* Breadcrumb / back */}
         <Link
           href="/interview-prep"
@@ -129,8 +130,11 @@ export default function InterviewCategoryPage({
             {/* Category hero */}
             <div className="rounded-xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] p-5">
               <div className="flex items-start gap-3">
-                <span className="text-3xl leading-none" aria-hidden>
-                  {cat.data?.icon}
+                <span
+                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl"
+                  style={{ backgroundColor: `${categoryBrandColor(category)}1A` }}
+                >
+                  <CategoryIcon slug={category} className="h-7 w-7" />
                 </span>
                 <div className="flex-1 min-w-0">
                   <h1 className="text-xl font-bold tracking-tight">{cat.data?.title}</h1>

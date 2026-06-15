@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { CategoryIcon, categoryBrandColor } from "@/components/interview/category-icon";
 import type { InterviewCategoryOut } from "@/types";
 
 export function CategoryCard({
@@ -13,25 +14,18 @@ export function CategoryCard({
   const pct = category.question_count
     ? Math.round((reviewedCount / category.question_count) * 100)
     : 0;
+  const brand = categoryBrandColor(category.slug);
 
   return (
     <Link href={`/interview-prep/${category.slug}`} className="group block">
       <Card className="relative h-full overflow-hidden p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-brand-300">
-        {/* Category color accent bar */}
-        <span
-          className="absolute inset-x-0 top-0 h-1 opacity-80"
-          style={{ backgroundColor: category.color }}
-          aria-hidden
-        />
-
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <span
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-2xl"
-              style={{ backgroundColor: `${category.color}1A` }}
-              aria-hidden
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
+              style={{ backgroundColor: `${brand}1A` }}
             >
-              {category.icon}
+              <CategoryIcon slug={category.slug} className="h-6 w-6" />
             </span>
             <div className="min-w-0">
               <h2 className="truncate text-sm font-semibold">{category.title}</h2>
