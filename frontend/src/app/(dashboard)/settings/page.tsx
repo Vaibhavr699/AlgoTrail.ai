@@ -3,7 +3,6 @@
 import { useSession, signOut } from "next-auth/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import {
   User,
   Palette,
@@ -51,12 +50,15 @@ export default function SettingsPage() {
           <CardContent>
             <div className="flex items-center gap-4">
               {user?.image ? (
-                <Image
+                // Plain <img> (not next/image) so OAuth avatar hosts work without
+                // allowlisting in next.config — matches the sidebar avatar.
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
                   src={user.image}
                   alt={user.name || "Avatar"}
                   width={64}
                   height={64}
-                  className="h-16 w-16 rounded-full object-cover"
+                  className="h-16 w-16 rounded-full object-cover shrink-0"
                   referrerPolicy="no-referrer"
                 />
               ) : (
