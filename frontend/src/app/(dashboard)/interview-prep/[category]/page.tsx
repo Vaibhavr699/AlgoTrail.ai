@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import { TopNav } from "@/components/layout/top-nav";
 import { QuestionCard } from "@/components/interview/question-card";
@@ -15,9 +15,9 @@ import type { Difficulty } from "@/types";
 export default function InterviewCategoryPage({
   params,
 }: {
-  params: Promise<{ category: string }>;
+  params: { category: string };
 }) {
-  const { category } = use(params);
+  const { category } = params;
   const { data: session } = useSession();
   const cat = useInterviewCategory(category);
   const progress = useInterviewProgress();
