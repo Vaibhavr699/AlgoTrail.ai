@@ -10,6 +10,7 @@ from sqlalchemy import (
     Enum as SAEnum,
     ForeignKey,
     Integer,
+    JSON,
     String,
     UniqueConstraint,
     func,
@@ -66,6 +67,9 @@ class User(Base):
     progress: Mapped[list["Progress"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     notes: Mapped[list["Note"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     sessions: Mapped[list["StudySession"]] = relationship(back_populates="user", cascade="all, delete-orphan")
+    interview_progress: Mapped[list["InterviewProgress"]] = relationship(
+        back_populates="user", cascade="all, delete-orphan"
+    )
 
 
 class Topic(Base):
@@ -170,3 +174,69 @@ class AiUsage(Base):
     user_id: Mapped[str] = mapped_column(String, ForeignKey("users.id"), index=True)
     day: Mapped[date] = mapped_column(Date, index=True)
     count: Mapped[int] = mapped_column(Integer, default=0)
+
+
+class InterviewCategory(Base):
+    __tablename__ = "interview_categories"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=_cuid)
+    slug: Mapped[str] = mapped_column(String, unique=True, index=True)
+    title: Mapped[str] = mapped_column(String)
+    icon: Mapped[str] = mapped_column(String)
+    order: Mapped[int] = mapped_column(Integer)
+    description: Mapped[str] = mapped_column(String)
+    color: Mapped[str] = mapped_column(String)
+    language: Mapped[str] = mapped_column(String)
+
+    questions: Mapped[list["InterviewQuestion"]] = relationship(
+        back_populates="category",
+        cascade="all, delete-orphan",
+        order_by="InterviewQuestion.order",
+    )
+
+
+class InterviewQuestion(Base):
+    __tablename__ = "interview_questions"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=_cuid)
+    category_id: Mapped[str] = mapped_column(
+        String, ForeignKey("interview_categories.id"), index=True
+    )
+    slug: Mapped[str] = mapped_column(String, unique=True, index=True)
+    question: Mapped[str] = mapped_column(String)
+    difficulty: Mapped[Difficulty] = mapped_column(SAEnum(Difficulty, name="difficulty"))
+    tldr: Mapped[str] = mapped_column(String)
+    explanation: Mapped[str] = mapped_column(String)
+    code_examples: Mapped[list[dict]] = mapped_column(JSON, default=list)
+    tags: Mapped[list[str]] = mapped_column(ARRAY(String), default=list)
+    gotchas: Mapped[list[str]] = mapped_column(ARRAY(String), default=list)
+    follow_ups: Mapped[list[str]] = mapped_column(ARRAY(String), default=list)
+    order: Mapped[int] = mapped_column(Integer)
+
+    category: Mapped["InterviewCategory"] = relationship(back_populates="questions")
+    progress: Mapped[list["InterviewProgress"]] = relationship(
+        back_populates="question", cascade="all, delete-orphan"
+    )
+
+
+class InterviewProgress(Base):
+    __tablename__ = "interview_progress"
+    __table_args__ = (
+        UniqueConstraint(
+            "user_id", "interview_question_id", name="uq_interview_progress_user_question"
+        ),
+    )
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=_cuid)
+    user_id: Mapped[str] = mapped_column(String, ForeignKey("users.id"), index=True)
+    interview_question_id: Mapped[str] = mapped_column(
+        String, ForeignKey("interview_questions.id"), index=True
+    )
+    reviewed: Mapped[bool] = mapped_column(Boolean, default=False)
+    bookmarked: Mapped[bool] = mapped_column(Boolean, default=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
+
+    user: Mapped["User"] = relationship(back_populates="interview_progress")
+    question: Mapped["InterviewQuestion"] = relationship(back_populates="progress")
